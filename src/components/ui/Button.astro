@@ -1,0 +1,59 @@
+---
+interface Props {
+  href?:      string
+  variant?:   'primary' | 'outline'
+  size?:      'sm' | 'md'
+  ariaLabel?: string
+  class?:     string
+}
+
+const { href, variant = 'primary', size = 'md', ariaLabel, class: className } = Astro.props
+const Tag = href ? 'a' : 'button'
+---
+
+<Tag
+  href={href}
+  aria-label={ariaLabel}
+  class:list={['btn', `btn--${variant}`, `btn--${size}`, className]}
+>
+  <slot />
+</Tag>
+
+<style>
+  .btn {
+    display: inline-block;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    font-weight: 700;
+    font-family: var(--font-sans);
+    transition: all var(--transition-fast);
+    border: 1px solid transparent;
+    cursor: pointer;
+    line-height: 1;
+  }
+
+  .btn--md { padding: 12px 32px; font-size: 1rem; }
+  .btn--sm { padding: 8px 20px;  font-size: 0.875rem; }
+
+  .btn--primary {
+    background: var(--accent);
+    color: #fff;
+    box-shadow: var(--shadow-btn);
+  }
+  .btn--primary:hover {
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-btn-hover);
+  }
+
+  .btn--outline {
+    background: transparent;
+    border-color: var(--border-btn);
+    color: var(--text-main);
+  }
+  .btn--outline:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(255, 87, 87, 0.05);
+  }
+</style>

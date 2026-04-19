@@ -1,0 +1,41 @@
+---
+import { client, PORTFOLIO_QUERY, PORTFOLIO_ITEM_QUERY } from '../../lib/sanity'
+import type { SanityPortfolioItem } from '../../lib/sanity'
+import PortfolioLayout from '../../layouts/PortfolioLayout.astro'
+import PortableText from '../../components/ui/PortableText'
+
+export async function getStaticPaths() {
+  const cases: SanityPortfolioItem[] = await client.fetch(PORTFOLIO_QUERY)
+  return cases.map(item => ({
+    params: { slug: item.slug },
+    props:  { slug: item.slug },
+  }))
+}
+
+const { slug } = Astro.props
+const item: SanityPortfolioItem = await client.fetch(PORTFOLIO_ITEM_QUERY, { slug })
+
+if (!item) return Astro.redirect('/portfolio', 302)
+---
+
+<PortfolioLayout
+  title={item.title}
+  description={item.description}
+  tags={item.tags ?? []}
+  metric={item.metric}
+  image={item.image}
+>
+  {item.challenge && item.challenge.length > 0 && (
+    <section>
+      <h2>El problema</h2>
+      <PortableText value={item.challenge} client:load />
+    </section>
+  )}
+
+  {item.solution && item.solution.length > 0 && (
+    <section>
+      <h2>La solución</h2>
+      <PortableText value={item.solution} client:load />
+    </section>
+  )}
+</PortfolioLayout>

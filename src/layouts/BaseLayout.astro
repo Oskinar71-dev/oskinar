@@ -1,0 +1,80 @@
+---
+import '../styles/global.css'
+import ParticleSystem from '../components/three/ParticleSystem'
+import { orgSchema, webSiteSchema } from '../lib/seo'
+
+interface Props {
+  title?:       string
+  description?: string
+}
+
+const {
+  title       = 'Oskinar — Desarrollo Web & IA',
+  description = 'Desarrollo de plugins a medida, eCommerce escalable y soluciones de IA. Código limpio, resultados reales.',
+} = Astro.props
+---
+
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=optional"
+      rel="stylesheet"
+    />
+
+    <!-- SEO por defecto — los layouts internos lo sobreescriben via slot "head" -->
+    <title>{title}</title>
+    <meta name="description"        content={description} />
+    <meta property="og:title"       content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type"        content="website" />
+    <meta property="og:locale"      content="es_ES" />
+
+    <!-- Schema.org global -->
+    <script type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(webSiteSchema)} />
+
+    <!-- Slot para que layouts internos inyecten sus propios meta/schema -->
+    <slot name="head" />
+  </head>
+  <body>
+    <div class="glow-bg" aria-hidden="true"></div>
+    <div class="center-guide" aria-hidden="true"></div>
+    <ParticleSystem client:visible color="#FF5757" count={120} size={0.025} speed={0.0002} />
+    <slot />
+  </body>
+</html>
+
+<style>
+  .glow-bg {
+    position: fixed;
+    top: -20%;
+    left: -10%;
+    width: 60vw;
+    height: 60vw;
+    background: var(--gradient-glow);
+    filter: blur(100px);
+    opacity: 0.5;
+    z-index: -1;
+    pointer-events: none;
+    animation: pulseGlow 10s infinite alternate;
+  }
+
+  .center-guide {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    width: 1px;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.03);
+    z-index: 0;
+    pointer-events: none;
+  }
+</style>

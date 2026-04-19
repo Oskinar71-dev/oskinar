@@ -1,0 +1,138 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import Header from '../components/layout/Header.astro'
+---
+
+<BaseLayout
+  title="Contacto | Oskinar"
+  description="Cuéntame tu proyecto. Respondo en menos de 24 horas."
+>
+  <Header />
+
+  <main class="main">
+    <div class="container">
+      <div class="header">
+        <span class="badge">Hablemos</span>
+        <h1>¿Tienes un proyecto<br /><span class="text-gradient">en mente?</span></h1>
+        <p class="subtitle">
+          Cuéntame qué necesitas. Analizo el problema y te propongo una solución concreta
+          — sin compromiso y sin vaguedades.
+        </p>
+      </div>
+
+      <div class="contact-grid">
+        <div class="email-block">
+          <p class="label">Email directo</p>
+          <a href="mailto:hola@oskinar.es" class="big-email">hola@oskinar.es</a>
+          <p class="note">Respondo en menos de 24h en días laborables.</p>
+        </div>
+
+        <div class="links-block">
+          <p class="label">Encuéntrame en</p>
+          <ul class="social" role="list">
+            <li>
+              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" role="listitem">
+                LinkedIn &rarr;
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com" target="_blank" rel="noopener noreferrer" role="listitem">
+                GitHub &rarr;
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .main {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding-top: var(--nav-height);
+    position: relative;
+    z-index: 1;
+  }
+
+  .container { width: 90%; max-width: var(--container-w); margin: 0 auto; }
+
+  .header { margin-bottom: 56px; max-width: 640px; }
+
+  .badge {
+    display: inline-block;
+    padding: 6px 12px;
+    background: var(--accent-tint-md);
+    color: var(--accent-soft);
+    border-radius: var(--radius-badge);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 2rem;
+  }
+
+  h1 {
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+  }
+
+  .text-gradient {
+    background: var(--gradient-accent);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .subtitle { font-size: 1.1rem; color: var(--text-muted); line-height: 1.7; }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+  }
+
+  .label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--accent-soft);
+    margin-bottom: 1rem;
+  }
+
+  .big-email {
+    display: block;
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    font-weight: 800;
+    color: var(--text-main);
+    text-decoration: none;
+    margin-bottom: 0.75rem;
+    transition: color var(--transition-fast);
+    line-height: 1.2;
+  }
+
+  .big-email:hover { color: var(--accent); }
+
+  .note { font-size: 0.85rem; color: var(--text-muted); }
+
+  .social { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+
+  .social a {
+    color: var(--text-main);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.1rem;
+    transition: color var(--transition-fast);
+  }
+
+  .social a:hover { color: var(--accent); }
+
+  @media (max-width: 768px) {
+    .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+  }
+</style>

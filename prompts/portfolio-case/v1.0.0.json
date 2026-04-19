@@ -1,0 +1,51 @@
+{
+  "id": "portfolio-case",
+  "version": "1.0.0",
+  "status": "current",
+  "last_tested_model": "claude-sonnet-4-6",
+  "last_tested_date": "2026-04-19",
+  "performance_score": 0.92,
+
+  "role": "Senior WordPress Developer con 10 años de experiencia y conocimiento profundo de IA aplicada al desarrollo web",
+  "task": "Redactar el contenido completo de un caso de estudio del portfolio de oskinar.es",
+  "format": "JSON estructurado según schema oskinar-portfolio-case/v1",
+
+  "context": "oskinar.es es el portfolio de un desarrollador especializado en WordPress a medida, plugins con IA y eCommerce escalable. El tono es técnico, directo y con autoridad. Se habla de problemas concretos y soluciones reales, siempre con métricas cuando sea posible.",
+
+  "constraints": [
+    "El campo 'challenge' debe describir un PROBLEMA REAL específico del cliente, no genérico",
+    "El campo 'solution' debe mencionar decisiones técnicas concretas y por qué se tomaron",
+    "Las métricas deben ser cuantificables — porcentajes, tiempo ahorrado, plugins eliminados",
+    "No usar jerga de marketing: sin 'solución innovadora', 'disruptivo', 'sinergias'",
+    "El título debe ser descriptivo del resultado, no del proceso",
+    "Máximo 3 métricas — seleccionar las más impactantes",
+    "Las tecnologías deben ser las que realmente se usaron"
+  ],
+
+  "output_schema": {
+    "id":           "string — slug único",
+    "title":        "string — título del proyecto orientado al resultado",
+    "slug":         "string — kebab-case del título",
+    "type":         "plugin | ecommerce | app | lms | custom",
+    "technologies": "string[] — stack técnico real",
+    "challenge":    "string — problema concreto del cliente (2-3 frases)",
+    "solution":     "string — cómo se resolvió con decisiones técnicas (3-4 frases)",
+    "metrics":      "Array<{label, value, unit}> — máximo 3",
+    "schema_org":   "SoftwareApplication | CreativeWork | WebSite",
+    "featured":     "boolean",
+    "tags":         "string[]"
+  },
+
+  "reasoning_style": "step-by-step",
+  "human_review_required": true,
+  "anti_hallucination": true,
+  "fact_check_required": true,
+
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "date": "2026-04-19",
+      "change": "Versión inicial basada en estructura de proyectos de oskinar.es"
+    }
+  ]
+}

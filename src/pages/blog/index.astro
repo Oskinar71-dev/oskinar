@@ -1,0 +1,106 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import Header from '../../components/layout/Header.astro'
+import Contact from '../../components/sections/Contact.astro'
+import { client, POSTS_QUERY } from '../../lib/sanity'
+import type { SanityPost } from '../../lib/sanity'
+
+const posts: SanityPost[] = await client.fetch(POSTS_QUERY)
+---
+
+<BaseLayout
+  title="Blog | Oskinar"
+  description="Artículos técnicos sobre desarrollo web, integración de IA y optimización de rendimiento."
+>
+  <Header />
+
+  <main class="main">
+    <div class="container">
+      <div class="section-header">
+        <span class="badge">Conocimiento Técnico</span>
+        <h1>Blog <span class="text-gradient">Técnico</span><span class="dot">.</span></h1>
+        <p class="subtitle">Sin relleno. Solo lo que funciona en producción.</p>
+      </div>
+
+      {posts.length === 0 ? (
+        <p class="empty">Próximamente — el primer artículo está en camino.</p>
+      ) : (
+        <div class="posts">
+          {posts.map((post) => {
+            const date = new Date(post.publishedAt).toLocaleDateString('es-ES', {
+              year: 'numeric', month: 'long', day: 'numeric',
+            })
+            return (
+              <a href={`/blog/${post.slug}`} class="post-card">
+                {post.image && (
+                  <div class="post-img">
+                    <img src={post.image} alt={post.title} loading="lazy" />
+                  </div>
+                )}
+                <div class="post-body">
+                  <div class="post-meta">
+                    <time datetime={post.publishedAt}>{date}</time>
+                    <ul class="tags" role="list">
+                      {post.tags?.slice(0, 2).map(tag => <li role="listitem">{tag}</li>)}
+                    </ul>
+                  </div>
+                  <h2>{post.title}</h2>
+                  <p>{post.description}</p>
+                  <span class="read-more">Leer artículo &rarr;</span>
+                </div>
+              </a>
+            )
+          })}
+        </div>
+      )}
+    </div>
+  </main>
+
+  <Contact />
+</BaseLayout>
+
+<style>
+  .main {
+    padding-top: calc(var(--nav-height) + 80px);
+    padding-bottom: 80px;
+    position: relative;
+    z-index: 1;
+  }
+  .container { width: 90%; max-width: var(--container-w); margin: 0 auto; }
+  .section-header { margin-bottom: 80px; }
+  .badge {
+    display: inline-block; padding: 6px 12px;
+    background: var(--accent-tint-md); color: var(--accent-soft);
+    border-radius: var(--radius-badge); font-size: 0.75rem;
+    font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 1.5rem;
+  }
+  h1 { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 800; line-height: 1.1; margin-bottom: 1rem; }
+  .text-gradient {
+    background: var(--gradient-accent);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .dot { color: var(--accent); }
+  .subtitle { font-size: 1.1rem; color: var(--text-muted); }
+  .empty { color: var(--text-muted); font-size: 1.1rem; padding: 3rem 0; }
+  .posts { display: flex; flex-direction: column; gap: 2px; }
+  .post-card {
+    display: block; border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-card); text-decoration: none; color: inherit; overflow: hidden;
+    transition: border-color var(--transition), background var(--transition);
+  }
+  .post-card:hover { border-color: var(--border-hover); background: var(--bg-right); }
+  .post-img { height: 220px; overflow: hidden; }
+  .post-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+  .post-card:hover .post-img img { transform: scale(1.04); }
+  .post-body { padding: 36px; }
+  .post-meta { display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; }
+  time { font-size: 0.82rem; color: var(--text-muted); }
+  .tags { display: flex; gap: 6px; list-style: none; }
+  .tags li {
+    font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent-soft);
+    background: var(--accent-tint); padding: 2px 7px; border-radius: var(--radius-badge);
+  }
+  .post-card h2 { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.75rem; line-height: 1.3; }
+  .post-card p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.25rem; }
+  .read-more { font-size: 0.9rem; font-weight: 700; color: var(--accent); }
+</style>

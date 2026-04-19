@@ -1,0 +1,32 @@
+---
+import { client, POSTS_QUERY, POST_QUERY } from '../../lib/sanity'
+import type { SanityPost } from '../../lib/sanity'
+import BlogLayout from '../../layouts/BlogLayout.astro'
+import PortableText from '../../components/ui/PortableText'
+
+export async function getStaticPaths() {
+  const posts: SanityPost[] = await client.fetch(POSTS_QUERY)
+  return posts.map(post => ({
+    params: { slug: post.slug },
+    props:  { slug: post.slug },
+  }))
+}
+
+const { slug } = Astro.props
+const post: SanityPost = await client.fetch(POST_QUERY, { slug })
+
+if (!post) return Astro.redirect('/blog', 302)
+---
+
+<BlogLayout
+  title={post.title}
+  description={post.description}
+  publishedAt={new Date(post.publishedAt)}
+  tags={post.tags ?? []}
+  image={post.image}
+>
+  {post.body && post.body.length > 0
+    ? <PortableText value={post.body} client:load />
+    : <p style="color: var(--text-muted)">Contenido próximamente.</p>
+  }
+</BlogLayout>

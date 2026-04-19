@@ -1,0 +1,201 @@
+---
+import BaseLayout from './BaseLayout.astro'
+import SEOHead from '../components/layout/SEOHead.astro'
+import Header from '../components/layout/Header.astro'
+import { portfolioSchema, buildTitle } from '../lib/seo'
+
+interface Props {
+  title:       string
+  description: string
+  tags:        string[]
+  metric?:     { label: string; value: string }
+  image?:      string
+}
+
+const { title, description, tags, metric, image } = Astro.props
+
+const schema = portfolioSchema({
+  title,
+  description,
+  url: Astro.url.href,
+  image,
+})
+---
+
+<BaseLayout>
+  <Fragment slot="head">
+    <SEOHead
+      title={buildTitle(title)}
+      description={description}
+      schema={schema}
+    />
+  </Fragment>
+
+  <Header />
+
+  <main class="portfolio-main">
+    <div class="container">
+      <header class="case-header">
+        <a href="/portfolio" class="back-link" aria-label="Volver al portfolio">
+          &larr; Portfolio
+        </a>
+
+        {metric && (
+          <div class="big-metric">
+            <span class="metric-value">{metric.value}</span>
+            <span class="metric-label">{metric.label}</span>
+          </div>
+        )}
+
+        <h1>{title}</h1>
+        <p class="lead">{description}</p>
+
+        <ul class="tags" role="list" aria-label="Tecnologías">
+          {tags.map(tag => <li role="listitem">{tag}</li>)}
+        </ul>
+      </header>
+
+      <div class="prose">
+        <slot />
+      </div>
+
+      <footer class="case-footer">
+        <a href="mailto:hola@oskinar.es" class="btn-cta">
+          ¿Proyecto similar? Hablemos &rarr;
+        </a>
+      </footer>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .portfolio-main {
+    padding-top: calc(var(--nav-height) + 60px);
+    padding-bottom: 120px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .container {
+    width: 90%;
+    max-width: 820px;
+    margin: 0 auto;
+  }
+
+  .back-link {
+    display: inline-block;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    transition: color var(--transition-fast);
+  }
+
+  .back-link:hover { color: var(--accent); }
+
+  .case-header { margin-bottom: 4rem; }
+
+  .big-metric {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.5rem;
+  }
+
+  .metric-value {
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 800;
+    line-height: 1;
+    background: var(--gradient-accent);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .metric-label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 10px;
+  }
+
+  h1 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.5px;
+    margin-bottom: 1.5rem;
+  }
+
+  .lead {
+    font-size: 1.15rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+  }
+
+  .tags {
+    display: flex;
+    gap: 8px;
+    list-style: none;
+    flex-wrap: wrap;
+  }
+
+  .tags li {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--accent-soft);
+    background: var(--accent-tint);
+    padding: 3px 8px;
+    border-radius: var(--radius-badge);
+  }
+
+  .prose { line-height: 1.8; }
+
+  .prose :global(h2) {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin: 2.5rem 0 1rem;
+  }
+
+  .prose :global(p) {
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+  }
+
+  .prose :global(ul) {
+    color: var(--text-muted);
+    padding-left: 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .prose :global(li) { margin-bottom: 0.6rem; line-height: 1.7; }
+
+  .prose :global(strong) { color: var(--text-main); font-weight: 700; }
+
+  .case-footer {
+    margin-top: 5rem;
+    padding-top: 3rem;
+    border-top: 1px solid var(--border-subtle);
+    text-align: center;
+  }
+
+  .btn-cta {
+    display: inline-block;
+    padding: 14px 36px;
+    background: var(--accent);
+    color: #fff;
+    text-decoration: none;
+    font-weight: 700;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-btn);
+    transition: all var(--transition-fast);
+  }
+
+  .btn-cta:hover {
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-btn-hover);
+  }
+</style>

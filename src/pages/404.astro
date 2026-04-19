@@ -1,0 +1,53 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import Header from '../components/layout/Header.astro'
+---
+
+<BaseLayout title="404 — Página no encontrada | Oskinar" description="Esta página no existe.">
+  <Header />
+  <main class="main">
+    <div class="container">
+      <span class="code">404</span>
+      <h1>Página no encontrada</h1>
+      <p>La URL que buscas no existe o fue movida.</p>
+      <a href="/" class="btn">Volver al inicio &rarr;</a>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .main {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+  .container { width: 90%; max-width: 600px; margin: 0 auto; }
+  .code {
+    display: block;
+    font-size: 8rem;
+    font-weight: 800;
+    line-height: 1;
+    background: var(--gradient-accent);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1rem;
+  }
+  h1 { font-size: 2rem; font-weight: 700; margin-bottom: 1rem; }
+  p  { color: var(--text-muted); margin-bottom: 2rem; }
+  .btn {
+    display: inline-block;
+    padding: 12px 32px;
+    background: var(--accent);
+    color: #fff;
+    text-decoration: none;
+    font-weight: 700;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-btn);
+    transition: all var(--transition-fast);
+  }
+  .btn:hover { background: var(--accent-hover); transform: translateY(-2px); }
+</style>

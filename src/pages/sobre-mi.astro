@@ -1,0 +1,171 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import Header from '../components/layout/Header.astro'
+import Contact from '../components/sections/Contact.astro'
+---
+
+<BaseLayout
+  title="Sobre mí | Oskinar"
+  description="Desarrollador web especializado en soluciones a medida, integración de IA y arquitecturas headless."
+>
+  <Header />
+
+  <main class="main">
+    <div class="container">
+
+      <div class="hero-block">
+        <div class="hero-text">
+          <span class="badge">Sobre mí</span>
+          <h1>Programo soluciones.<br /><span class="text-gradient">No instalo plantillas.</span></h1>
+          <p>
+            Soy desarrollador web con foco en código a medida, arquitecturas limpias y rendimiento real.
+            Trabajo principalmente con el stack web moderno — Astro, React, Node — e integro IA en los
+            proyectos donde aporta valor de verdad, no como moda.
+          </p>
+          <p>
+            Antes de escribir una sola línea de código, entiendo el problema. Creo que el mejor software
+            es el que el cliente no tiene que tocar porque simplemente funciona.
+          </p>
+          <a href="/contacto" class="btn-primary">Hablemos de tu proyecto</a>
+        </div>
+
+        <div class="hero-stats" aria-label="Estadísticas">
+          <div class="stat">
+            <span class="stat-value">+50</span>
+            <span class="stat-label">Proyectos entregados</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">8+</span>
+            <span class="stat-label">Años de experiencia</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">100%</span>
+            <span class="stat-label">Código propio, sin plugins innecesarios</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Cómo trabajo</h2>
+        <div class="process-grid">
+          {[
+            { n: '01', title: 'Escucho el problema', desc: 'Antes de proponer nada, entiendo qué está fallando y por qué. La mayoría de problemas técnicos son en realidad problemas de proceso.' },
+            { n: '02', title: 'Propongo una solución concreta', desc: 'Sin ambigüedades. Te digo exactamente qué voy a hacer, en cuánto tiempo y qué resultado esperar.' },
+            { n: '03', title: 'Construyo con IA como copiloto', desc: 'Uso IA para acelerar el desarrollo sin sacrificar calidad. El código que entrego es revisado, testado y mantenible.' },
+            { n: '04', title: 'Entrego y acompaño', desc: 'El proyecto no termina en el deploy. Me aseguro de que entiendas lo que tienes y de que funcione en producción.' },
+          ].map(({ n, title, desc }) => (
+            <div class="process-step">
+              <span class="step-n">{n}</span>
+              <h3>{title}</h3>
+              <p>{desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Especialidades</h2>
+        <div class="skills-grid">
+          {[
+            'Desarrollo de plugins y extensiones a medida',
+            'Integración de APIs de IA (OpenAI, Anthropic)',
+            'Arquitecturas headless (Astro + Sanity)',
+            'eCommerce B2B y alto tráfico',
+            'Optimización Core Web Vitals',
+            'Apps móviles con React Native',
+            'Auditorías técnicas y refactoring',
+            'Automatización con CRON y webhooks',
+          ].map(skill => (
+            <div class="skill-item">{skill}</div>
+          ))}
+        </div>
+      </div>
+
+      <div class="section values">
+        <h2>Lo que no hago</h2>
+        <ul class="no-list">
+          <li>No instalo temas premium y los llamo "desarrollo a medida"</li>
+          <li>No prometo plazos que no puedo cumplir</li>
+          <li>No desaparezco después del deploy</li>
+          <li>No añado complejidad donde no hace falta</li>
+        </ul>
+      </div>
+
+    </div>
+  </main>
+
+  <Contact />
+</BaseLayout>
+
+<style>
+  .main { padding-top: calc(var(--nav-height) + 80px); padding-bottom: 80px; position: relative; z-index: 1; }
+  .container { width: 90%; max-width: var(--container-w); margin: 0 auto; }
+
+  .badge {
+    display: inline-block; padding: 6px 12px; background: var(--accent-tint-md); color: var(--accent-soft);
+    border-radius: var(--radius-badge); font-size: 0.75rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 2rem;
+  }
+
+  .hero-block {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 56px;
+    align-items: center; margin-bottom: 80px;
+  }
+
+  .hero-text h1 { font-size: clamp(2.5rem, 4vw, 3.5rem); font-weight: 800; line-height: 1.1; margin-bottom: 1.5rem; }
+  .text-gradient {
+    background: var(--gradient-accent);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .hero-text p { color: var(--text-muted); line-height: 1.8; margin-bottom: 1.25rem; font-size: 1.05rem; }
+
+  .btn-primary {
+    display: inline-block; padding: 12px 32px; background: var(--accent); color: #fff;
+    text-decoration: none; font-weight: 700; border-radius: var(--radius);
+    box-shadow: var(--shadow-btn); transition: all var(--transition-fast); margin-top: 1rem;
+  }
+  .btn-primary:hover { background: var(--accent-hover); transform: translateY(-2px); box-shadow: var(--shadow-btn-hover); }
+
+  .hero-stats { display: flex; flex-direction: column; gap: 40px; }
+  .stat { border-left: 2px solid var(--accent); padding-left: 24px; }
+  .stat-value { display: block; font-size: 3rem; font-weight: 800; color: var(--text-main); line-height: 1; }
+  .stat-label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-top: 10px; }
+
+  .section { margin-bottom: 80px; }
+  .section h2 { font-size: 2rem; font-weight: 800; margin-bottom: 40px; }
+
+  .process-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 32px; }
+  .process-step {
+    background: var(--bg-right); border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-card); padding: 28px;
+    transition: border-color var(--transition);
+  }
+  .process-step:hover { border-color: var(--border-hover); }
+  .step-n { display: block; font-size: 0.75rem; font-weight: 700; color: var(--accent); letter-spacing: 2px; margin-bottom: 12px; }
+  .process-step h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 14px; }
+  .process-step p { color: var(--text-muted); font-size: 0.92rem; line-height: 1.6; }
+
+  .skills-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;
+  }
+  .skill-item {
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle);
+    border-radius: var(--radius); padding: 14px 20px; font-size: 0.95rem;
+    color: var(--text-muted); transition: all var(--transition);
+  }
+  .skill-item:hover { border-color: var(--accent); color: var(--text-main); background: var(--accent-tint-md); }
+
+  .no-list { list-style: none; display: flex; flex-direction: column; gap: 16px; }
+  .no-list li {
+    padding: 16px 20px; border: 1px solid var(--border-subtle); border-radius: var(--radius);
+    color: var(--text-muted); font-size: 0.95rem; position: relative; padding-left: 48px;
+  }
+  .no-list li::before {
+    content: '✕'; position: absolute; left: 18px; color: var(--accent); font-weight: 700;
+  }
+
+  @media (max-width: 992px) {
+    .hero-block { grid-template-columns: 1fr; gap: 48px; }
+    .hero-stats { flex-direction: row; flex-wrap: wrap; gap: 24px; }
+  }
+</style>

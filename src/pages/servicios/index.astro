@@ -1,0 +1,17 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import Header from '../../components/layout/Header.astro'
+import Services from '../../components/sections/Services.astro'
+import Contact from '../../components/sections/Contact.astro'
+---
+
+<BaseLayout
+  title="Servicios | Oskinar"
+  description="Plugins a medida, integración de IA, eCommerce escalable, apps multiplataforma y arquitectura headless."
+>
+  <Header />
+  <main style="padding-top: var(--nav-height); position: relative; z-index: 1;">
+    <Services />
+  </main>
+  <Contact />
+</BaseLayout>

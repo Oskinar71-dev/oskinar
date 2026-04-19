@@ -1,0 +1,140 @@
+---
+import { client, PORTFOLIO_QUERY } from '../../lib/sanity'
+import type { SanityPortfolioItem } from '../../lib/sanity'
+
+let projects: SanityPortfolioItem[] = []
+try {
+  projects = await client.fetch(PORTFOLIO_QUERY)
+} catch {}
+
+const fallback = [
+  {
+    _id: '1', title: 'Plugin de Reservas con IA', slug: '',
+    description: 'Sistema de citas que conecta con OpenAI para predecir disponibilidad y gestionar reservas automáticamente, eliminando el 80% de la gestión manual.',
+    tags: ['PHP Nativo', 'OpenAI API', 'CRON Jobs'], metric: { label: 'Reducción gestión manual', value: '80%' },
+    publishedAt: '', image: undefined,
+  },
+  {
+    _id: '2', title: 'E-commerce B2B de Alto Tráfico', slug: '',
+    description: 'Plataforma B2B con checkout personalizado y sincronización bidireccional con ERP externo vía REST API.',
+    tags: ['Node.js', 'Rest API', 'Redis Cache'], metric: { label: 'Uptime garantizado', value: '99.9%' },
+    publishedAt: '', image: undefined,
+  },
+  {
+    _id: '3', title: 'Plataforma Académica (LMS)', slug: '',
+    description: 'LMS a medida que reemplazó 15 plugins innecesarios. Carga 3× más rápida y Lighthouse de 34 a 96.',
+    tags: ['Astro', 'Sanity CMS', 'Optimización'], metric: { label: 'Mejora de velocidad', value: '3×' },
+    publishedAt: '', image: undefined,
+  },
+]
+
+const items = projects.length > 0 ? projects.slice(0, 3) : fallback
+---
+
+<section id="proyectos" class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="badge">Casos de Éxito</span>
+      <h2>Proyectos <span class="text-gradient">Customizados</span><span class="dot">.</span></h2>
+    </div>
+
+    <div class="project-grid">
+      {items.map((item) => (
+        <article class="project-card">
+          <div class="project-img" aria-hidden="true">
+            {item.image
+              ? <img src={item.image} alt={item.title} loading="lazy" />
+              : <span class="img-label">{item.tags?.[0]}</span>
+            }
+          </div>
+
+          <div class="project-content">
+            <h3>{item.title}</h3>
+            <p>{item.description}</p>
+
+            {item.metric && (
+              <dl class="metric">
+                <dt>{item.metric.label}</dt>
+                <dd>{item.metric.value}</dd>
+              </dl>
+            )}
+
+            <ul class="tech-tags" role="list">
+              {item.tags?.map(tag => <li role="listitem">{tag}</li>)}
+            </ul>
+
+            <div class="project-links">
+              {item.slug
+                ? <a href={`/portfolio/${item.slug}`} class="link-arrow">Ver Case Study <span>&rarr;</span></a>
+                : <a href="/portfolio" class="link-arrow">Ver Portfolio <span>&rarr;</span></a>
+              }
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <div class="view-all">
+      <a href="/portfolio" class="btn-outline">Ver todos los proyectos &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .section { padding: var(--section-py) 0; position: relative; z-index: 1; }
+  .container { width: 90%; max-width: var(--container-w); margin: 0 auto; }
+  .section-header { margin-bottom: 80px; max-width: 600px; }
+  .badge {
+    display: inline-block; padding: 6px 12px; background: var(--accent-tint-md); color: var(--accent-soft);
+    border-radius: var(--radius-badge); font-size: 0.75rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 2rem;
+  }
+  h2 { font-size: 3rem; font-weight: 800; line-height: 1.1; margin-top: 1rem; }
+  .text-gradient {
+    background: var(--gradient-accent);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .dot { color: var(--accent); }
+  .project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; }
+  .project-card {
+    background: var(--bg-right); border: 1px solid var(--border-subtle);
+    border-radius: var(--radius); overflow: hidden; display: flex; flex-direction: column;
+    transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+  }
+  .project-card:hover { transform: translateY(-10px); box-shadow: var(--shadow-card-hover); border-color: var(--border-hover); }
+  .project-img {
+    height: 200px; overflow: hidden;
+    background: linear-gradient(135deg, var(--bg-glass), #1a1b24);
+    display: flex; align-items: center; justify-content: center;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .project-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+  .project-card:hover .project-img img { transform: scale(1.04); }
+  .img-label { font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent-soft); opacity: 0.6; }
+  .project-content { padding: 30px; flex-grow: 1; display: flex; flex-direction: column; gap: 1.25rem; }
+  .project-content h3 { font-size: 1.4rem; font-weight: 700; color: var(--text-main); }
+  .project-content p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.7; flex-grow: 1; }
+  .metric { display: flex; flex-direction: column; gap: 6px; }
+  .metric dt { font-size: 0.75rem; color: var(--text-muted); }
+  .metric dd { font-size: 1.8rem; font-weight: 800; color: var(--accent); line-height: 1; }
+  .tech-tags { display: flex; gap: 8px; list-style: none; flex-wrap: wrap; margin-top: 4px; }
+  .tech-tags li {
+    font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent-soft);
+    background: var(--accent-tint); padding: 4px 8px; border-radius: var(--radius-badge);
+  }
+  .project-links { margin-top: auto; padding-top: 4px; }
+  .link-arrow {
+    color: var(--text-main); text-decoration: none; font-weight: 700;
+    display: inline-flex; align-items: center; gap: 6px; transition: color var(--transition-fast);
+  }
+  .link-arrow span { transition: transform var(--transition-fast); }
+  .link-arrow:hover { color: var(--accent); }
+  .link-arrow:hover span { transform: translateX(5px); }
+  .view-all { margin-top: 60px; text-align: center; }
+  .btn-outline {
+    display: inline-block; padding: 12px 32px; border-radius: var(--radius);
+    border: 1px solid var(--border-btn); color: var(--text-main);
+    text-decoration: none; font-weight: 700; transition: all var(--transition-fast);
+  }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); background: rgba(255,87,87,0.05); }
+</style>

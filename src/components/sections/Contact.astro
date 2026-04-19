@@ -1,0 +1,147 @@
+---
+---
+
+<footer id="contacto" class="footer">
+  <div class="container">
+    <p class="eyebrow">¿Tienes un proyecto en mente?</p>
+    <h2>Construyamos algo<br /><span class="text-gradient">que funcione de verdad.</span></h2>
+    <p class="subtitle">Cuéntame tu problema. Yo programaré la solución.</p>
+
+    <a href="mailto:hola@oskinar.es" class="big-email" aria-label="Enviar email a hola@oskinar.es">
+      hola@oskinar.es
+    </a>
+
+    <nav class="footer-nav" aria-label="Links del footer">
+      <a href="/sobre-mi">Sobre mí</a>
+      <a href="/servicios">Servicios</a>
+      <a href="/portfolio">Portfolio</a>
+      <a href="/blog">Blog</a>
+      <a href="/contacto">Contacto</a>
+    </nav>
+
+    <div class="footer-bottom">
+      <span>&copy; {new Date().getFullYear()} Oskinar. Desarrollo Web & IA.</span>
+      <div class="footer-right">
+        <div class="social-links" role="list" aria-label="Redes sociales">
+          <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" role="listitem">LinkedIn</a>
+          <a href="https://github.com"   target="_blank" rel="noopener noreferrer" role="listitem">GitHub</a>
+        </div>
+        <div class="legal-links">
+          <a href="/privacidad">Privacidad</a>
+          <a href="/cookies">Cookies</a>
+          <a href="/aviso-legal">Aviso legal</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    padding: 100px 0 60px;
+    background: var(--gradient-footer);
+    text-align: center;
+    border-top: 1px solid var(--border-subtle);
+    position: relative;
+    z-index: 1;
+  }
+
+  .container {
+    width: 90%;
+    max-width: var(--container-w);
+    margin: 0 auto;
+  }
+
+  .eyebrow {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--accent-soft);
+    margin-bottom: 1.5rem;
+  }
+
+  h2 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+  }
+
+  .text-gradient {
+    background: var(--gradient-accent);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .subtitle {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    margin-bottom: 3rem;
+  }
+
+  .big-email {
+    display: inline-block;
+    font-size: clamp(1.8rem, 4vw, 3.5rem);
+    font-weight: 800;
+    color: var(--text-muted);
+    text-decoration: none;
+    margin-bottom: 3.5rem;
+    transition: color var(--transition);
+  }
+
+  .big-email:hover {
+    color: var(--accent);
+    text-decoration: underline;
+    text-decoration-thickness: 3px;
+  }
+
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 40px;
+    border-top: 1px solid var(--border-subtle);
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+
+  .footer-nav {
+    display: flex; gap: 32px; justify-content: center;
+    flex-wrap: wrap; margin-bottom: 3rem;
+  }
+
+  .footer-nav a {
+    color: var(--text-muted); text-decoration: none; font-size: 0.95rem;
+    font-weight: 500; transition: color var(--transition-fast);
+  }
+
+  .footer-nav a:hover { color: var(--text-main); }
+
+  .footer-right { display: flex; align-items: center; gap: 32px; flex-wrap: wrap; }
+
+  .social-links { display: flex; gap: 24px; }
+
+  .social-links a {
+    color: var(--text-main); text-decoration: none;
+    font-weight: 600; transition: color var(--transition-fast);
+  }
+
+  .social-links a:hover { color: var(--accent); }
+
+  .legal-links { display: flex; gap: 16px; }
+
+  .legal-links a {
+    color: var(--text-muted); text-decoration: none; font-size: 0.82rem;
+    transition: color var(--transition-fast);
+  }
+
+  .legal-links a:hover { color: var(--accent); }
+
+  @media (max-width: 992px) {
+    .footer-bottom { flex-direction: column; gap: 20px; }
+    .footer-right { flex-direction: column; gap: 16px; }
+    .footer-nav { gap: 16px; }
+  }
+</style>

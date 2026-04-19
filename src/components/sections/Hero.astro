@@ -1,0 +1,221 @@
+---
+---
+
+<section class="hero" aria-label="Presentación">
+  <div class="container hero-grid">
+
+    <div class="hero-content">
+      <span class="badge">Desarrollo Web & IA</span>
+      <h1>
+        Soluciones digitales a medida,
+        <span class="text-gradient">potenciadas por IA.</span>
+      </h1>
+      <p class="hero-description">
+        No instalo plantillas; programo soluciones. Creo plugins <em>ad-hoc</em>,
+        eCommerce escalable y apps móviles, optimizando cada línea de código con
+        inteligencia artificial para entregas rápidas y resultados reales.
+      </p>
+      <div class="hero-actions" role="group" aria-label="Acciones principales">
+        <a href="#proyectos" class="btn btn-primary">Ver portfolio</a>
+        <a href="#contacto"  class="btn btn-outline">Hablemos</a>
+      </div>
+    </div>
+
+    <div class="hero-visual" aria-hidden="true">
+      <div class="glass-card">
+        <div class="code-filename">solution.ts</div>
+        <div class="code-snippet">
+          <span class="code-line"><span class="c-keyword">import</span> <span class="c-var">&#123; AIBuilder &#125;</span> <span class="c-keyword">from</span> <span class="c-string">'@oskinar/core'</span></span>
+          <span class="code-line"></span>
+          <span class="code-line"><span class="c-keyword">const</span> <span class="c-var">solution</span> = <span class="c-keyword">new</span> <span class="c-fn">AIBuilder</span>(&#123;</span>
+          <span class="code-line indent"><span class="c-var">model</span>: <span class="c-string">'claude-sonnet'</span>,</span>
+          <span class="code-line indent"><span class="c-var">stack</span>: [<span class="c-string">'Astro'</span>, <span class="c-string">'React'</span>, <span class="c-string">'Node'</span>],</span>
+          <span class="code-line indent"><span class="c-var">delivery</span>: <span class="c-string">'fast'</span></span>
+          <span class="code-line">&#125;)</span>
+          <span class="code-line"></span>
+          <span class="code-line"><span class="c-keyword">await</span> <span class="c-var">solution</span>.<span class="c-fn">deploy</span>()</span>
+          <span class="code-line"><span class="c-comment">// ✓ Solución desplegada en producción</span></span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding-top: var(--nav-height);
+    background: linear-gradient(
+      90deg,
+      var(--bg-left)  0%,
+      var(--bg-left)  50%,
+      var(--bg-right) 50%,
+      var(--bg-right) 100%
+    );
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%;
+    width: 20px; height: 100%;
+    background: linear-gradient(to right, rgba(0,0,0,0.2), rgba(0,0,0,0));
+    pointer-events: none;
+  }
+
+  .container {
+    width: 90%;
+    max-width: var(--container-w);
+    margin: 0 auto;
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    width: 100%;
+  }
+
+  .hero-content {
+    padding-right: 60px;
+    z-index: 2;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 6px 12px;
+    background: var(--accent-tint-md);
+    color: var(--accent-soft);
+    border-radius: var(--radius-badge);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 2rem;
+  }
+
+  h1 {
+    font-size: clamp(3rem, 5vw, 5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    margin-bottom: 1.5rem;
+  }
+
+  .text-gradient {
+    background: var(--gradient-accent);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-description {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    max-width: 480px;
+    margin-bottom: 2.5rem;
+    line-height: 1.8;
+  }
+
+  .hero-actions { display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
+
+  .btn {
+    display: inline-block;
+    padding: 12px 32px;
+    border-radius: var(--radius);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1rem;
+    transition: all var(--transition-fast);
+    border: 1px solid transparent;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    box-shadow: var(--shadow-btn);
+  }
+
+  .btn-primary:hover {
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-btn-hover);
+  }
+
+  .btn-outline {
+    background: transparent;
+    border-color: var(--border-btn);
+    color: var(--text-main);
+  }
+
+  .btn-outline:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(255, 87, 87, 0.05);
+  }
+
+  /* Visual right */
+  .hero-visual {
+    padding-left: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .glass-card {
+    background: var(--bg-glass);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-card);
+    padding: 40px;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: var(--shadow-card);
+    animation: floatCard 8s ease-in-out infinite;
+  }
+
+  .code-filename {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    opacity: 0.7;
+  }
+
+  .code-snippet {
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    line-height: 1.8;
+  }
+
+  .code-line   { display: block; color: var(--text-main); }
+  .indent      { margin-left: 20px; }
+
+  .c-keyword { color: #FF5757; font-weight: bold; }
+  .c-string  { color: #69F0AE; }
+  .c-fn      { color: #7C4DFF; }
+  .c-var     { color: #FFD740; }
+  .c-comment { color: #5C6070; font-style: italic; }
+
+  @media (max-width: 992px) {
+    .hero {
+      background: var(--bg-left);
+      padding-top: calc(var(--nav-height) + 2rem);
+      padding-bottom: 4rem;
+    }
+
+    .hero::after { display: none; }
+
+    .hero-grid { grid-template-columns: 1fr; }
+
+    .hero-content {
+      padding-right: 0;
+      margin-bottom: 3rem;
+    }
+
+    .hero-visual { padding-left: 0; }
+  }
+</style>

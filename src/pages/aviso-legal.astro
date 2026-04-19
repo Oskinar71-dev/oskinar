@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import Header from '../components/layout/Header.astro'
+---
+
+<BaseLayout
+  title="Aviso Legal | Oskinar"
+  description="Aviso legal y condiciones de uso de oskinar.es."
+>
+  <Header />
+  <main class="main">
+    <div class="container">
+      <h1>Aviso Legal</h1>
+      <p class="updated">Última actualización: abril de 2026</p>
+
+      <div class="prose">
+        <h2>1. Datos identificativos</h2>
+        <p>En cumplimiento del artículo 10 de la Ley 34/2002, de 11 de julio, de Servicios de la Sociedad de la Información y del Comercio Electrónico (LSSI-CE), se facilitan los siguientes datos:</p>
+        <ul>
+          <li><strong>Titular:</strong> Oskinar</li>
+          <li><strong>Domicilio:</strong> España</li>
+          <li><strong>Correo electrónico:</strong> <a href="mailto:hola@oskinar.es">hola@oskinar.es</a></li>
+          <li><strong>Sitio web:</strong> https://oskinar.es</li>
+        </ul>
+
+        <h2>2. Objeto y ámbito de aplicación</h2>
+        <p>El presente Aviso Legal regula el acceso y uso del sitio web <strong>oskinar.es</strong> (en adelante, "el Sitio"). El acceso al Sitio implica la aceptación de las presentes condiciones.</p>
+
+        <h2>3. Propiedad intelectual e industrial</h2>
+        <p>Todos los contenidos del Sitio (textos, imágenes, código, diseño, logotipos) son propiedad del titular o cuentan con las licencias correspondientes. Queda prohibida su reproducción, distribución o transformación sin autorización expresa.</p>
+
+        <h2>4. Responsabilidad</h2>
+        <p>El titular no garantiza la ausencia de errores en el Sitio ni su disponibilidad continua. No se responsabiliza de los daños derivados del uso del Sitio o de la imposibilidad de acceder a él.</p>
+
+        <h2>5. Enlaces externos</h2>
+        <p>El Sitio puede contener enlaces a sitios de terceros. El titular no se responsabiliza del contenido ni de las políticas de privacidad de dichos sitios.</p>
+
+        <h2>6. Legislación aplicable</h2>
+        <p>El presente Aviso Legal se rige por la legislación española. Para cualquier controversia, las partes se someten a los juzgados y tribunales del domicilio del titular.</p>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .main { padding-top: calc(var(--nav-height) + 80px); padding-bottom: 120px; position: relative; z-index: 1; }
+  .container { width: 90%; max-width: 760px; margin: 0 auto; }
+  h1 { font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; margin-bottom: 0.5rem; }
+  .updated { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 3rem; }
+  .prose h2 { font-size: 1.3rem; font-weight: 700; margin: 2.5rem 0 0.75rem; }
+  .prose p { color: var(--text-muted); line-height: 1.8; margin-bottom: 1rem; }
+  .prose ul { color: var(--text-muted); padding-left: 1.5rem; margin-bottom: 1rem; }
+  .prose li { margin-bottom: 0.4rem; line-height: 1.7; }
+  .prose a { color: var(--accent); text-decoration: underline; }
+  .prose strong { color: var(--text-main); }
+</style>

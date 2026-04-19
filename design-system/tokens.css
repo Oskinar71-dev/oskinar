@@ -1,0 +1,197 @@
+/* =========================================
+   OSKINAR.ES — DESIGN SYSTEM TOKENS
+   Fuente de verdad: design-system/tokens.json
+   Generado: 2026-04-19 | v1.0.0
+   ========================================= */
+
+/* =========================================
+   IMPORT FUENTES — Plus Jakarta Sans
+   Subset crítico preloaded en <head>
+   ========================================= */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=optional');
+
+:root {
+  /* ---- COLORES DE FONDO ---- */
+  --bg-left:           #1E1F26;  /* Fondo base — Gris Plomo Profundo */
+  --bg-right:          #252630;  /* Tarjetas y split derecho */
+  --bg-glass:          #2A2C36;  /* Glass card del hero */
+  --bg-footer:         #15161A;  /* Footer profundo */
+
+  /* ---- ACENTO — Naranja Coral ---- */
+  --accent:            #FF5757;
+  --accent-soft:       #FF8A65;
+  --accent-hover:      #FF4040;
+  --accent-glow:       rgba(255, 87, 87, 0.25);
+  --accent-tint:       rgba(255, 87, 87, 0.08);
+  --accent-tint-md:    rgba(255, 87, 87, 0.10);
+
+  /* ---- GRADIENTES ---- */
+  --gradient-accent:   linear-gradient(135deg, #FF5757 0%, #FF8A65 100%);
+  --gradient-split:    linear-gradient(90deg, #1E1F26 50%, #252630 50%);
+  --gradient-footer:   linear-gradient(to bottom, #1E1F26, #15161A);
+  --gradient-glow:     radial-gradient(circle, rgba(255,87,87,0.25) 0%, rgba(0,0,0,0) 70%);
+
+  /* ---- TEXTO ---- */
+  --text-main:         #FFFFFF;
+  --text-muted:        #9DA0B0;  /* Gris medio azulado */
+
+  /* ---- BORDES ---- */
+  --border-subtle:     rgba(255, 255, 255, 0.05);
+  --border-hover:      rgba(255, 87, 87, 0.30);
+  --border-btn:        rgba(255, 255, 255, 0.15);
+  --border-guide:      rgba(255, 255, 255, 0.03);
+
+  /* ---- TIPOGRAFÍA ---- */
+  --font-main:        'Plus Jakarta Sans', sans-serif;
+  --font-mono:        'Courier New', Courier, monospace;
+
+  /* ---- TAMAÑOS DE FUENTE ---- */
+  --text-hero:         clamp(3rem, 5vw, 5rem);
+  --text-h2:           3rem;
+  --text-h2-footer:    2.5rem;
+  --text-big-email:    clamp(2rem, 5vw, 4rem);
+  --text-body-lg:      1.1rem;
+  --text-body:         1rem;
+  --text-body-sm:      0.95rem;
+  --text-badge:        0.75rem;
+  --text-tag:          0.75rem;
+  --text-nav:          0.95rem;
+  --text-logo:         1.5rem;
+
+  /* ---- ESPACIADO ---- */
+  --container-width:   1200px;
+  --nav-height:        90px;
+  --section-py:        120px;
+  --section-header-mb: 80px;
+  --hero-px:           60px;
+  --card-p:            30px;
+  --glass-p:           40px;
+  --gap-grid:          40px;
+  --gap-stack:         20px;
+  --gap-nav:           40px;
+
+  /* ---- BORDER RADIUS ---- */
+  --radius:            6px;   /* Base tech — cuadrado */
+  --radius-card:       8px;
+  --radius-badge:      4px;
+  --radius-tag:        4px;
+
+  /* ---- SOMBRAS ---- */
+  --shadow-card:       0 20px 50px rgba(0, 0, 0, 0.3);
+  --shadow-btn:        0 4px 15px rgba(255, 87, 87, 0.2);
+  --shadow-btn-hover:  0 8px 25px rgba(255, 87, 87, 0.35);
+  --shadow-card-hover: 0 20px 40px rgba(0, 0, 0, 0.4);
+
+  /* ---- SYNTAX HIGHLIGHTING ---- */
+  --c-keyword:         #FF5757;  /* Naranja — mismo que accent */
+  --c-string:          #69F0AE;  /* Mint Green */
+  --c-function:        #7C4DFF;  /* Violet */
+  --c-variable:        #FFD740;  /* Amber Yellow */
+  --c-comment:         #5C6070;  /* Gris desaturado */
+
+  /* ---- EFECTOS ---- */
+  --blur-nav:          blur(8px);
+  --blur-glow:         blur(100px);
+  --glow-opacity:      0.5;
+
+  /* ---- TRANSICIONES ---- */
+  --transition:        0.3s ease;
+  --transition-fast:   0.2s ease;
+}
+
+/* =========================================
+   RESET MÍNIMO (igual que el original)
+   ========================================= */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: var(--bg-left);
+  color: var(--text-main);
+  font-family: var(--font-main);
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* =========================================
+   UTILIDADES (IDÉNTICAS AL ORIGINAL)
+   ========================================= */
+.container {
+  width: 90%;
+  max-width: var(--container-width);
+  margin: 0 auto;
+}
+
+/* Gradiente de texto — efecto signature de oskinar */
+.text-gradient {
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Punto naranja del logo */
+.dot { color: var(--accent); }
+
+/* =========================================
+   EFECTOS AMBIENTALES
+   ========================================= */
+.glow-bg {
+  position: fixed;
+  top: -20%;
+  left: -10%;
+  width: 60vw;
+  height: 60vw;
+  background: var(--gradient-glow);
+  filter: var(--blur-glow);
+  opacity: var(--glow-opacity);
+  z-index: -1;
+  pointer-events: none;
+  animation: pulseGlow 10s infinite alternate;
+}
+
+.center-guide {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  width: 1px;
+  height: 100%;
+  background: var(--border-guide);
+  z-index: 0;
+  pointer-events: none;
+}
+
+@keyframes pulseGlow {
+  0%   { transform: scale(1); }
+  100% { transform: scale(1.1); }
+}
+
+@keyframes floatCard {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-15px); }
+}
+
+/* =========================================
+   ACCESIBILIDAD
+   ========================================= */
+@media (prefers-reduced-motion: reduce) {
+  .glow-bg,
+  .glass-card,
+  [class*="animate"] {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Focus visible para navegación por teclado */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: var(--radius-badge);
+}

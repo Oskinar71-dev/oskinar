@@ -1,0 +1,165 @@
+---
+import BaseLayout from './BaseLayout.astro'
+import SEOHead from '../components/layout/SEOHead.astro'
+import Header from '../components/layout/Header.astro'
+import { articleSchema, buildTitle } from '../lib/seo'
+
+interface Props {
+  title:       string
+  description: string
+  publishedAt: Date
+  tags:        string[]
+  image?:      string
+}
+
+const { title, description, publishedAt, tags, image } = Astro.props
+
+const schema = articleSchema({
+  title,
+  description,
+  url: Astro.url.href,
+  publishedAt: publishedAt.toISOString(),
+  image,
+})
+
+const formatted = publishedAt.toLocaleDateString('es-ES', {
+  year: 'numeric', month: 'long', day: 'numeric',
+})
+---
+
+<BaseLayout>
+  <Fragment slot="head">
+    <SEOHead
+      title={buildTitle(title)}
+      description={description}
+      type="article"
+      schema={schema}
+    />
+  </Fragment>
+
+  <Header />
+
+  <main class="blog-main">
+    <article class="container">
+      <header class="article-header">
+        <div class="meta">
+          <time datetime={publishedAt.toISOString()}>{formatted}</time>
+          <ul class="tags" role="list">
+            {tags.map(tag => <li role="listitem">{tag}</li>)}
+          </ul>
+        </div>
+        <h1>{title}</h1>
+        <p class="lead">{description}</p>
+      </header>
+
+      <div class="prose">
+        <slot />
+      </div>
+    </article>
+  </main>
+</BaseLayout>
+
+<style>
+  .blog-main {
+    padding-top: calc(var(--nav-height) + 60px);
+    padding-bottom: 120px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .container {
+    width: 90%;
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  .article-header { margin-bottom: 3rem; }
+
+  .meta {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  time {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  .tags {
+    display: flex;
+    gap: 8px;
+    list-style: none;
+    flex-wrap: wrap;
+  }
+
+  .tags li {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--accent-soft);
+    background: var(--accent-tint);
+    padding: 3px 8px;
+    border-radius: var(--radius-badge);
+  }
+
+  h1 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.5px;
+    margin-bottom: 1.5rem;
+  }
+
+  .lead {
+    font-size: 1.15rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+
+  .prose { line-height: 1.8; }
+
+  .prose :global(h2) {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin: 2.5rem 0 1rem;
+    color: var(--text-main);
+  }
+
+  .prose :global(p) {
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+  }
+
+  .prose :global(pre) {
+    background: var(--bg-glass);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-card);
+    padding: 1.5rem;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+
+  .prose :global(code):not(:global(pre code)) {
+    background: var(--accent-tint);
+    color: var(--accent-soft);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: var(--font-mono);
+    font-size: 0.88em;
+  }
+
+  .prose :global(ul), .prose :global(ol) {
+    color: var(--text-muted);
+    padding-left: 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .prose :global(li) { margin-bottom: 0.6rem; line-height: 1.7; }
+
+  .prose :global(strong) { color: var(--text-main); font-weight: 700; }
+</style>

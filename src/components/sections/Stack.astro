@@ -1,0 +1,131 @@
+---
+const categories = [
+  {
+    label: 'IA & APIs',
+    items: ['OpenAI API', 'Anthropic Claude', 'LangChain', 'Replicate'],
+  },
+  {
+    label: 'Frontend',
+    items: ['Astro', 'React', 'TypeScript', 'Tailwind CSS', 'Three.js'],
+  },
+  {
+    label: 'Backend',
+    items: ['Node.js', 'PHP 8+', 'REST API', 'MySQL', 'Redis'],
+  },
+  {
+    label: 'DevOps',
+    items: ['Vercel', 'Git', 'GitHub Actions', 'Docker'],
+  },
+]
+---
+
+<section id="stack" class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="badge">Arsenal Técnico</span>
+      <h2>Mi Stack <span class="text-gradient">de Trabajo</span><span class="dot">.</span></h2>
+    </div>
+
+    <div class="categories">
+      {categories.map(({ label, items }) => (
+        <div class="category">
+          <h3 class="category-label">{label}</h3>
+          <ul class="stack-grid" role="list">
+            {items.map((item) => (
+              <li class="stack-item" role="listitem">{item}</li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .section {
+    padding: var(--section-py) 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .container {
+    width: 90%;
+    max-width: var(--container-w);
+    margin: 0 auto;
+  }
+
+  .section-header {
+    margin-bottom: 80px;
+    max-width: 600px;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 6px 12px;
+    background: var(--accent-tint-md);
+    color: var(--accent-soft);
+    border-radius: var(--radius-badge);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 2rem;
+  }
+
+  h2 {
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-top: 1rem;
+  }
+
+  .text-gradient {
+    background: var(--gradient-accent);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .dot { color: var(--accent); }
+
+  .categories {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 48px;
+  }
+
+  .category-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--accent-soft);
+    margin-bottom: 16px;
+  }
+
+  .stack-grid {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .stack-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 14px 20px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    transition: all var(--transition);
+    cursor: default;
+  }
+
+  .stack-item:hover {
+    background: var(--accent-tint-md);
+    border-color: var(--accent);
+    color: var(--text-main);
+    transform: translateX(6px);
+  }
+</style>

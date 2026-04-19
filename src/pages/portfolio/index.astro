@@ -1,0 +1,105 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import Header from '../../components/layout/Header.astro'
+import Contact from '../../components/sections/Contact.astro'
+import { client, PORTFOLIO_QUERY } from '../../lib/sanity'
+import type { SanityPortfolioItem } from '../../lib/sanity'
+
+const cases: SanityPortfolioItem[] = await client.fetch(PORTFOLIO_QUERY)
+---
+
+<BaseLayout
+  title="Portfolio | Oskinar"
+  description="Casos de éxito reales: plugins con IA, eCommerce B2B y plataformas académicas a medida."
+>
+  <Header />
+
+  <main class="main">
+    <div class="container">
+      <div class="section-header">
+        <span class="badge">Casos de Éxito</span>
+        <h1>Portfolio <span class="text-gradient">Completo</span><span class="dot">.</span></h1>
+        <p class="subtitle">Cada proyecto es un problema resuelto. Aquí está el cómo.</p>
+      </div>
+
+      {cases.length === 0 ? (
+        <p class="empty">Los primeros casos de éxito se publicarán pronto.</p>
+      ) : (
+        <div class="grid">
+          {cases.map((item) => (
+            <a href={`/portfolio/${item.slug}`} class="card">
+              <div class="card-img" aria-hidden="true">
+                {item.image
+                  ? <img src={item.image} alt={item.title} loading="lazy" />
+                  : <span class="img-tag">{item.tags?.[0]}</span>
+                }
+              </div>
+              <div class="card-body">
+                {item.metric && (
+                  <div class="metric">
+                    <span class="metric-val">{item.metric.value}</span>
+                    <span class="metric-lbl">{item.metric.label}</span>
+                  </div>
+                )}
+                <h2>{item.title}</h2>
+                <p>{item.description}</p>
+                <ul class="tags" role="list">
+                  {item.tags?.map(tag => <li role="listitem">{tag}</li>)}
+                </ul>
+              </div>
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
+  </main>
+
+  <Contact />
+</BaseLayout>
+
+<style>
+  .main { padding-top: calc(var(--nav-height) + 80px); padding-bottom: 80px; position: relative; z-index: 1; }
+  .container { width: 90%; max-width: var(--container-w); margin: 0 auto; }
+  .section-header { margin-bottom: 80px; }
+  .badge {
+    display: inline-block; padding: 6px 12px; background: var(--accent-tint-md); color: var(--accent-soft);
+    border-radius: var(--radius-badge); font-size: 0.75rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 1.5rem;
+  }
+  h1 { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 800; line-height: 1.1; margin-bottom: 1rem; }
+  .text-gradient {
+    background: var(--gradient-accent);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .dot { color: var(--accent); }
+  .subtitle { font-size: 1.1rem; color: var(--text-muted); }
+  .empty { color: var(--text-muted); font-size: 1.1rem; padding: 3rem 0; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 32px; }
+  .card {
+    display: flex; flex-direction: column; background: var(--bg-right);
+    border: 1px solid var(--border-subtle); border-radius: var(--radius-card);
+    overflow: hidden; text-decoration: none; color: inherit;
+    transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+  }
+  .card:hover { transform: translateY(-8px); box-shadow: var(--shadow-card-hover); border-color: var(--border-hover); }
+  .card-img {
+    height: 200px; overflow: hidden;
+    background: linear-gradient(135deg, var(--bg-glass), #1a1b24);
+    display: flex; align-items: center; justify-content: center;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+  .card:hover .card-img img { transform: scale(1.04); }
+  .img-tag { font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent-soft); opacity: 0.5; }
+  .card-body { padding: 28px; display: flex; flex-direction: column; gap: 10px; }
+  .metric { display: flex; flex-direction: column; }
+  .metric-val { font-size: 2.2rem; font-weight: 800; line-height: 1; color: var(--accent); }
+  .metric-lbl { font-size: 0.75rem; color: var(--text-muted); }
+  .card-body h2 { font-size: 1.25rem; font-weight: 700; }
+  .card-body p { font-size: 0.92rem; color: var(--text-muted); line-height: 1.6; flex-grow: 1; }
+  .tags { display: flex; gap: 8px; list-style: none; flex-wrap: wrap; }
+  .tags li {
+    font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent-soft);
+    background: var(--accent-tint); padding: 3px 8px; border-radius: var(--radius-badge);
+  }
+</style>

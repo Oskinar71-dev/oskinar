@@ -1,0 +1,175 @@
+---
+const navLinks = [
+  { href: '/',          label: 'Inicio' },
+  { href: '/sobre-mi',  label: 'Sobre mí' },
+  { href: '/portfolio', label: 'Portfolio' },
+  { href: '/servicios', label: 'Servicios' },
+  { href: '/blog',      label: 'Blog' },
+]
+---
+
+<header class="navbar">
+  <div class="container">
+    <a href="/" class="logo" aria-label="Oskinar — inicio">
+      Oskinar<span class="dot" aria-hidden="true">.</span>
+    </a>
+
+    <nav aria-label="Navegación principal">
+      <ul class="nav-links" role="list">
+        {navLinks.map(({ href, label }) => (
+          <li><a href={href}>{label}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <a href="/contacto" class="btn btn-primary">Consultoría</a>
+
+    <button class="menu-toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <div id="mobile-menu" class="mobile-menu" hidden>
+    <ul role="list">
+      {navLinks.map(({ href, label }) => (
+        <li><a href={href}>{label}</a></li>
+      ))}
+      <li><a href="/contacto" class="btn btn-primary" style="display:inline-block;margin-top:1rem">Consultoría</a></li>
+    </ul>
+  </div>
+</header>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('.menu-toggle')!
+  const menu   = document.getElementById('mobile-menu')!
+
+  toggle.addEventListener('click', () => {
+    const isOpen = !menu.hidden
+    menu.hidden = isOpen
+    toggle.setAttribute('aria-expanded', String(!isOpen))
+  })
+
+  menu.querySelectorAll('a').forEach(link =>
+    link.addEventListener('click', () => {
+      menu.hidden = true
+      toggle.setAttribute('aria-expanded', 'false')
+    })
+  )
+</script>
+
+<style>
+  .navbar {
+    height: var(--nav-height);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    backdrop-filter: blur(8px);
+  }
+
+  .navbar > .container {
+    height: 100%;
+    width: 90%;
+    max-width: var(--container-w);
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-main);
+    text-decoration: none;
+  }
+
+  .dot { color: var(--accent); }
+
+  .nav-links {
+    list-style: none;
+    display: flex;
+    gap: 40px;
+  }
+
+  .nav-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: color var(--transition);
+  }
+
+  .nav-links a:hover { color: var(--text-main); }
+
+  .btn {
+    display: inline-block;
+    padding: 12px 32px;
+    border-radius: var(--radius);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1rem;
+    transition: all var(--transition-fast);
+    border: 1px solid transparent;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    box-shadow: var(--shadow-btn);
+  }
+
+  .btn-primary:hover {
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-btn-hover);
+  }
+
+  .menu-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+  }
+
+  .menu-toggle span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--text-main);
+    border-radius: 2px;
+  }
+
+  .mobile-menu {
+    position: absolute;
+    top: var(--nav-height);
+    left: 0;
+    width: 100%;
+    background: var(--bg-right);
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 2rem 5%;
+  }
+
+  .mobile-menu ul { list-style: none; }
+
+  .mobile-menu a {
+    display: block;
+    padding: 0.75rem 0;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1.1rem;
+    border-bottom: 1px solid var(--border-subtle);
+    transition: color var(--transition-fast);
+  }
+
+  .mobile-menu a:hover { color: var(--text-main); }
+
+  @media (max-width: 992px) {
+    .nav-links, .navbar > .container > .btn { display: none; }
+    .menu-toggle { display: flex; }
+  }
+</style>

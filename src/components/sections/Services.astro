@@ -1,0 +1,170 @@
+---
+const services = [
+  {
+    icon: '⚙️',
+    title: 'Plugins & Extensiones a Medida',
+    description: 'Lógica de negocio que ningún plugin de mercado cubre. Construyo la pieza exacta que necesitas, sin dependencias innecesarias.',
+    tags: ['PHP', 'Node.js', 'APIs REST'],
+  },
+  {
+    icon: '🤖',
+    title: 'Integración de IA en tu Producto',
+    description: 'Conecto OpenAI, Anthropic o modelos locales a tu plataforma existente. Chatbots, generación de contenido, clasificación automática.',
+    tags: ['OpenAI', 'Claude API', 'LangChain'],
+  },
+  {
+    icon: '🛒',
+    title: 'eCommerce Escalable',
+    description: 'Checkout personalizado, sincronización con ERP, catálogos B2B complejos. Optimizado para alto tráfico desde el diseño.',
+    tags: ['WooCommerce', 'Shopify Headless', 'Redis'],
+  },
+  {
+    icon: '📱',
+    title: 'Apps Multiplataforma',
+    description: 'Aplicaciones móviles con una sola base de código para iOS y Android, integradas con tu backend o CMS existente.',
+    tags: ['React Native', 'Flutter', 'Expo'],
+  },
+  {
+    icon: '⚡',
+    title: 'Auditoría & Optimización Web',
+    description: 'Análisis de Core Web Vitals, reducción de tiempo de carga y mejoras de SEO técnico con impacto medible en conversión.',
+    tags: ['Lighthouse', 'Core Web Vitals', 'SEO'],
+  },
+  {
+    icon: '🏗️',
+    title: 'Arquitectura Headless',
+    description: 'Separo el frontend del backend para que cada capa escale de forma independiente. Astro, Next.js o React + Sanity / Strapi.',
+    tags: ['Astro', 'Sanity CMS', 'Vercel Edge'],
+  },
+]
+---
+
+<section id="servicios" class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="badge">Qué puedo hacer por ti</span>
+      <h2>Servicios <span class="text-gradient">Especializados</span><span class="dot">.</span></h2>
+    </div>
+
+    <div class="services-grid">
+      {services.map(({ icon, title, description, tags }) => (
+        <article class="service-card">
+          <span class="service-icon" aria-hidden="true">{icon}</span>
+          <h3>{title}</h3>
+          <p>{description}</p>
+          <ul class="tech-tags" role="list" aria-label="Tecnologías">
+            {tags.map(tag => <li role="listitem">{tag}</li>)}
+          </ul>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .section {
+    padding: var(--section-py) 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .container {
+    width: 90%;
+    max-width: var(--container-w);
+    margin: 0 auto;
+  }
+
+  .section-header {
+    margin-bottom: 80px;
+    max-width: 600px;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 6px 12px;
+    background: var(--accent-tint-md);
+    color: var(--accent-soft);
+    border-radius: var(--radius-badge);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 2rem;
+  }
+
+  h2 {
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-top: 1rem;
+  }
+
+  .text-gradient {
+    background: var(--gradient-accent);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .dot { color: var(--accent); }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+  }
+
+  .service-card {
+    background: var(--bg-right);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-card);
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
+  }
+
+  .service-card:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  .service-icon {
+    font-size: 2rem;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .service-card h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-main);
+    line-height: 1.3;
+  }
+
+  .service-card p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    flex-grow: 1;
+  }
+
+  .tech-tags {
+    display: flex;
+    gap: 8px;
+    list-style: none;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+
+  .tech-tags li {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--accent-soft);
+    background: var(--accent-tint);
+    padding: 3px 8px;
+    border-radius: var(--radius-badge);
+  }
+</style>
