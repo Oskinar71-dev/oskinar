@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oskinar — Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:     #0a0908;
+      --bg2:    #111009;
+      --bg3:    #181614;
+      --fg:     #f0ede6;
+      --muted:  #6a6762;
+      --border: #252320;
+      --accent: #d4ff47;
+      --aD:     rgba(212,255,71,.08);
+      --dF:     'Bebas Neue', sans-serif;
+      --bF:     'Space Grotesk', sans-serif;
+      --mF:     'Space Mono', monospace;
+      --r:      3px;
+      --red:    #ff5f57;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;font-size:16px}
+    body{background:var(--bg);color:var(--fg);font-family:var(--bF);-webkit-font-smoothing:antialiased}
+    ::-webkit-scrollbar{width:3px}
+    ::-webkit-scrollbar-track{background:var(--bg)}
+    ::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+    /* ── LAYOUT ─────────────────────────────────────────── */
+    .shell{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
+    .sidebar{background:var(--bg2);border-right:1px solid var(--border);padding:28px 0;display:flex;flex-direction:column}
+    .sidebar-logo{font-family:var(--dF);font-size:20px;letter-spacing:.05em;padding:0 24px 28px;border-bottom:1px solid var(--border);margin-bottom:12px}
+    .sidebar-logo span{color:var(--accent)}
+    .sidebar-link{
+      display:block;padding:11px 24px;font-family:var(--mF);font-size:11px;
+      letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
+      border:none;background:none;text-align:left;width:100%;
+      transition:background .2s,color .2s;border-left:2px solid transparent;
+    }
+    .sidebar-link:hover{background:var(--aD);color:var(--fg)}
+    .sidebar-link.active{color:var(--accent);border-left-color:var(--accent);background:var(--aD)}
+    .sidebar-footer{margin-top:auto;padding:20px 24px;border-top:1px solid var(--border)}
+    .sidebar-footer a{
+      font-family:var(--mF);font-size:10px;color:var(--muted);letter-spacing:.1em;
+      text-decoration:none;display:block;transition:color .2s;
+    }
+    .sidebar-footer a:hover{color:var(--accent)}
+
+    .main{padding:40px 48px;overflow-y:auto}
+    .main-hdr{margin-bottom:40px;display:flex;justify-content:space-between;align-items:flex-end}
+    .main-title{font-family:var(--dF);font-size:clamp(40px,5vw,64px);line-height:.9}
+    .main-title span{color:var(--accent)}
+    .main-sub{font-family:var(--mF);font-size:10px;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;margin-top:8px}
+
+    /* ── INPUTS ─────────────────────────────────────────── */
+    .form-row{margin-bottom:18px}
+    .form-label{font-family:var(--mF);font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px}
+    .form-input{
+      width:100%;background:var(--bg2);border:1px solid var(--border);color:var(--fg);
+      font-family:var(--bF);font-size:14px;padding:10px 14px;border-radius:var(--r);
+      outline:none;transition:border-color .2s;
+    }
+    .form-input:focus{border-color:var(--accent)}
+    .form-input::placeholder{color:var(--border)}
+    textarea.form-input{resize:vertical;min-height:80px}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .form-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+
+    /* ── BUTTONS ────────────────────────────────────────── */
+    .btn-p{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:10px 22px;background:var(--accent);color:var(--bg);
+      font-family:var(--mF);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+      border:none;border-radius:var(--r);cursor:pointer;transition:opacity .2s;
+    }
+    .btn-p:hover{opacity:.85}
+    .btn-g{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:10px 22px;border:1px solid var(--border);color:var(--fg);
+      font-family:var(--mF);font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+      background:none;border-radius:var(--r);cursor:pointer;transition:border-color .2s,color .2s;
+    }
+    .btn-g:hover{border-color:var(--accent);color:var(--accent)}
+    .btn-d{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:7px 14px;border:1px solid transparent;color:var(--red);
+      font-family:var(--mF);font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+      background:none;border-radius:var(--r);cursor:pointer;transition:border-color .2s,background .2s;
+    }
+    .btn-d:hover{border-color:var(--red);background:rgba(255,95,87,.08)}
+
+    /* ── CARD LIST ──────────────────────────────────────── */
+    .card-list{display:flex;flex-direction:column;gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:32px}
+    .card-item{background:var(--bg);padding:20px 24px;display:flex;justify-content:space-between;align-items:center;gap:16px}
+    .card-item:hover{background:var(--bg3)}
+    .card-item-info{flex:1;min-width:0}
+    .card-item-name{font-size:15px;font-weight:600;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .card-item-meta{font-family:var(--mF);font-size:10px;color:var(--muted);letter-spacing:.06em}
+    .card-item-acts{display:flex;gap:8px;flex-shrink:0}
+
+    /* ── MODAL ──────────────────────────────────────────── */
+    .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(6px)}
+    .modal{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:32px;width:min(680px,100%);max-height:90vh;overflow-y:auto}
+    .modal-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px}
+    .modal-title{font-family:var(--dF);font-size:32px;line-height:1}
+    .modal-close{font-size:22px;color:var(--muted);background:none;border:none;cursor:pointer;padding:4px 8px;transition:color .2s}
+    .modal-close:hover{color:var(--fg)}
+
+    /* ── TOAST ──────────────────────────────────────────── */
+    .toast{
+      position:fixed;bottom:28px;right:28px;
+      background:var(--accent);color:var(--bg);
+      font-family:var(--mF);font-size:11px;letter-spacing:.1em;
+      padding:12px 20px;border-radius:var(--r);
+      animation:toastIn .25s ease;z-index:9999;
+    }
+    @keyframes toastIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+    /* ── SECTION SEPARATOR ──────────────────────────────── */
+    .sep{border:none;border-top:1px solid var(--border);margin:36px 0}
+    .section-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+    .section-title{font-family:var(--mF);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:12px}
+    .section-title::after{content:'';display:inline-block;height:1px;width:40px;background:var(--border)}
+    .badge{font-family:var(--mF);font-size:9px;padding:2px 8px;border:1px solid var(--border);border-radius:2px;color:var(--muted);letter-spacing:.06em}
+
+    /* ── TAG INPUT ──────────────────────────────────────── */
+    .tag-wrap{display:flex;flex-wrap:wrap;gap:6px;background:var(--bg2);border:1px solid var(--border);padding:8px 12px;border-radius:var(--r);min-height:44px;align-items:center}
+    .tag-wrap:focus-within{border-color:var(--accent)}
+    .tag-chip{background:var(--border);color:var(--fg);font-family:var(--mF);font-size:10px;padding:3px 8px;border-radius:2px;display:flex;align-items:center;gap:5px}
+    .tag-chip button{background:none;border:none;color:var(--muted);cursor:pointer;font-size:12px;line-height:1;padding:0}
+    .tag-chip button:hover{color:var(--red)}
+    .tag-inp{background:transparent;border:none;outline:none;color:var(--fg);font-family:var(--bF);font-size:13px;min-width:80px}
+    .tag-hint{font-family:var(--mF);font-size:9px;color:var(--muted);letter-spacing:.08em;margin-top:4px}
+
+    /* ── STATS ──────────────────────────────────────────── */
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:40px}
+    .stat{background:var(--bg);padding:24px;text-align:center}
+    .stat-n{font-family:var(--dF);font-size:48px;color:var(--accent);line-height:1}
+    .stat-l{font-family:var(--mF);font-size:9px;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;margin-top:4px}
+
+    /* ── EXPORT/IMPORT ──────────────────────────────────── */
+    .io-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;padding:20px 24px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r)}
+    .io-label{font-family:var(--mF);font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;flex:1}
+  </style>
+</head>
+<body>
+
+<div class="shell">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">OSK<span>.</span>DASH</div>
+    <button class="sidebar-link active" onclick="showTab('projects')">Proyectos</button>
+    <button class="sidebar-link" onclick="showTab('posts')">Blog</button>
+    <button class="sidebar-link" onclick="showTab('settings')">Ajustes</button>
+    <div class="sidebar-footer">
+      <a href="oskinar.html" target="_blank">↗ Ver web</a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main" id="main-content"></main>
+</div>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modal" style="display:none" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modal-body"></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast" style="display:none"></div>
+
+<script>
+/* ── STORAGE HELPERS ─────────────────────────────────────── */
+const DEFAULT_PROJECTS = [
+  { id:'arken',   num:'01', year:'2025', name:'Arken Dashboard',  desc:'Panel SaaS de analíticas en tiempo real',   tags:['Astro','React','Supabase'],         bg:'#111826', ac:'#4a90e2', challenge:'Construir un dashboard complejo que mantuviera el rendimiento con datos en tiempo real y múltiples usuarios simultáneos.', solution:'Arquitectura Astro con islas React para los componentes interactivos, WebSockets para datos en vivo y optimización agresiva de renders.', role:'Full Stack Developer' },
+  { id:'nomada',  num:'02', year:'2025', name:'Nómada App',        desc:'App de viajes multiplataforma',              tags:['Flutter','Node.js','PostgreSQL'],    bg:'#0f1e14', ac:'#4acf72', challenge:'Una única base de código funcionando perfectamente en iOS y Android, con mapas offline y sincronización de datos.', solution:'Flutter para el cliente móvil con gestión de estado BLoC, backend Node.js con sincronización offline-first usando SQLite local y replicación.', role:'Mobile & Backend Developer' },
+  { id:'espacio', num:'03', year:'2024', name:'Espacio Brand',     desc:'Identidad digital para estudio creativo',    tags:['Astro','GSAP','Cloudflare'],        bg:'#16112a', ac:'#9b59b6', challenge:'Una presencia web que representara el nivel creativo del estudio sin sacrificar velocidad de carga.', solution:'Astro con animaciones GSAP optimizadas, imágenes procesadas con Cloudflare Images y puntuación perfecta en Lighthouse.', role:'Frontend & Creative Dev' },
+  { id:'merkado', num:'04', year:'2024', name:'Merkado',           desc:'E-commerce de alta velocidad',               tags:['Next.js','Stripe','Vercel'],        bg:'#221212', ac:'#e74c3c', challenge:'Tienda online que cargara al instante con catálogo de miles de productos y checkout sin fricciones.', solution:'Next.js con ISR para páginas de producto, búsqueda Algolia, Stripe para pagos y edge runtime en Vercel para latencias mínimas.', role:'Frontend & E-commerce Dev' },
+];
+const DEFAULT_POSTS = [
+  { tag:'Performance',   title:'Astro vs Next.js: el futuro del desarrollo web',     excerpt:'Una comparativa honesta entre los dos frameworks más relevantes de 2025, con benchmarks reales.',               date:'12 Abr 2026', read:'5 min' },
+  { tag:'Mobile',        title:'Flutter en producción: lecciones de dos años',        excerpt:'Todo lo que aprendí llevando una app Flutter de 0 a 100.000 usuarios activos. Lo bueno y lo técnico.',          date:'28 Mar 2026', read:'8 min' },
+  { tag:'Design & Code', title:'Cómo alcancé el 100 en Lighthouse',                   excerpt:'El proceso completo para optimizar una web real hasta conseguir una puntuación perfecta en Core Web Vitals.',   date:'15 Feb 2026', read:'6 min' },
+  { tag:'TypeScript',    title:'TypeScript estricto: por qué vale la pena el dolor',  excerpt:'Activar el modo strict puede parecer un obstáculo. Aquí explico por qué cambió mi forma de escribir código.', date:'3 Ene 2026',  read:'4 min' },
+];
+
+function loadProjects() {
+  try { const d = JSON.parse(localStorage.getItem('osk_projects')); return Array.isArray(d) && d.length ? d : JSON.parse(JSON.stringify(DEFAULT_PROJECTS)); }
+  catch { return JSON.parse(JSON.stringify(DEFAULT_PROJECTS)); }
+}
+function loadPosts() {
+  try { const d = JSON.parse(localStorage.getItem('osk_posts')); return Array.isArray(d) && d.length ? d : JSON.parse(JSON.stringify(DEFAULT_POSTS)); }
+  catch { return JSON.parse(JSON.stringify(DEFAULT_POSTS)); }
+}
+function saveProjects(data) { localStorage.setItem('osk_projects', JSON.stringify(data)); }
+function savePosts(data)    { localStorage.setItem('osk_posts',    JSON.stringify(data)); }
+
+/* ── TOAST ───────────────────────────────────────────────── */
+let toastTimer;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.style.display = 'block';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.style.display = 'none', 2200);
+}
+
+/* ── MODAL ───────────────────────────────────────────────── */
+function openModal(html) {
+  document.getElementById('modal-body').innerHTML = html;
+  document.getElementById('modal').style.display = 'flex';
+}
+function closeModal() {
+  document.getElementById('modal').style.display = 'none';
+}
+
+/* ── TABS ────────────────────────────────────────────────── */
+let activeTab = 'projects';
+function showTab(tab) {
+  activeTab = tab;
+  document.querySelectorAll('.sidebar-link').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.sidebar-link').forEach(b => {
+    if (b.getAttribute('onclick') === `showTab('${tab}')`) b.classList.add('active');
+  });
+  if (tab === 'projects') renderProjects();
+  else if (tab === 'posts') renderPosts();
+  else renderSettings();
+}
+
+/* ══════════════════════════════════════════════════════════
+   PROJECTS
+══════════════════════════════════════════════════════════ */
+function renderProjects() {
+  const projects = loadProjects();
+  const main = document.getElementById('main-content');
+  main.innerHTML = `
+    <div class="main-hdr">
+      <div>
+        <h1 class="main-title">Proyectos<span>.</span></h1>
+        <p class="main-sub">${projects.length} proyecto${projects.length !== 1 ? 's' : ''} publicado${projects.length !== 1 ? 's' : ''}</p>
+      </div>
+      <button class="btn-p" onclick="openProjectForm()">+ Nuevo proyecto</button>
+    </div>
+    <div class="card-list" id="projects-list">
+      ${projects.map((p, i) => `
+        <div class="card-item">
+          <div class="card-item-info">
+            <div class="card-item-name">${esc(p.name)}</div>
+            <div class="card-item-meta">${esc(p.desc)} &nbsp;·&nbsp; ${(p.tags||[]).join(', ')}</div>
+          </div>
+          <div class="card-item-acts">
+            <button class="btn-g" onclick="openProjectForm(${i})">Editar</button>
+            <button class="btn-d" onclick="deleteProject(${i})">Eliminar</button>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function openProjectForm(idx) {
+  const projects = loadProjects();
+  const p = idx !== undefined ? { ...projects[idx] } : { id:'', num:'', year: new Date().getFullYear()+'', name:'', desc:'', tags:[], bg:'#111826', ac:'#d4ff47', challenge:'', solution:'', role:'' };
+  const isEdit = idx !== undefined;
+  openModal(`
+    <div class="modal-hdr">
+      <h2 class="modal-title">${isEdit ? 'Editar' : 'Nuevo'} proyecto</h2>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="form-grid">
+      <div class="form-row">
+        <label class="form-label">Nombre *</label>
+        <input class="form-input" id="f-name" value="${esc(p.name)}" placeholder="Nombre del proyecto" />
+      </div>
+      <div class="form-row">
+        <label class="form-label">Rol</label>
+        <input class="form-input" id="f-role" value="${esc(p.role||'')}" placeholder="Full Stack Developer" />
+      </div>
+    </div>
+    <div class="form-row">
+      <label class="form-label">Descripción corta *</label>
+      <input class="form-input" id="f-desc" value="${esc(p.desc)}" placeholder="Panel SaaS de analíticas..." />
+    </div>
+    <div class="form-grid-3">
+      <div class="form-row">
+        <label class="form-label">Número (ej. 01)</label>
+        <input class="form-input" id="f-num" value="${esc(p.num)}" placeholder="01" />
+      </div>
+      <div class="form-row">
+        <label class="form-label">Año</label>
+        <input class="form-input" id="f-year" value="${esc(p.year)}" placeholder="2025" />
+      </div>
+      <div class="form-row">
+        <label class="form-label">ID único</label>
+        <input class="form-input" id="f-id" value="${esc(p.id)}" placeholder="mi-proyecto" />
+      </div>
+    </div>
+    <div class="form-row">
+      <label class="form-label">Tags (Enter para añadir)</label>
+      <div class="tag-wrap" id="tag-wrap">
+        ${(p.tags||[]).map(t => `<span class="tag-chip">${esc(t)}<button type="button" onclick="removeTag(this,'${esc(t)}')" title="Eliminar">×</button></span>`).join('')}
+        <input class="tag-inp" id="tag-inp" placeholder="Astro, React…" onkeydown="handleTagKey(event)" />
+      </div>
+      <div class="tag-hint">Pulsa Enter o coma para añadir</div>
+    </div>
+    <div class="form-grid">
+      <div class="form-row">
+        <label class="form-label">Color de fondo</label>
+        <input class="form-input" id="f-bg" value="${esc(p.bg)}" placeholder="#111826" />
+      </div>
+      <div class="form-row">
+        <label class="form-label">Color de acento</label>
+        <input class="form-input" id="f-ac" value="${esc(p.ac)}" placeholder="#4a90e2" />
+      </div>
+    </div>
+    <div class="form-row">
+      <label class="form-label">El reto</label>
+      <textarea class="form-input" id="f-challenge" placeholder="Describir el reto técnico del proyecto...">${esc(p.challenge||'')}</textarea>
+    </div>
+    <div class="form-row">
+      <label class="form-label">La solución</label>
+      <textarea class="form-input" id="f-solution" placeholder="Describir la solución implementada...">${esc(p.solution||'')}</textarea>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px">
+      <button class="btn-g" onclick="closeModal()">Cancelar</button>
+      <button class="btn-p" onclick="saveProject(${isEdit ? idx : 'null'})">Guardar proyecto</button>
+    </div>
+  `);
+}
+
+function handleTagKey(e) {
+  if (e.key === 'Enter' || e.key === ',') {
+    e.preventDefault();
+    const val = e.target.value.trim().replace(/,$/, '');
+    if (val) { addTag(val); e.target.value = ''; }
+  }
+}
+function addTag(val) {
+  const wrap = document.getElementById('tag-wrap');
+  const inp  = document.getElementById('tag-inp');
+  const chip = document.createElement('span');
+  chip.className = 'tag-chip';
+  chip.innerHTML = `${esc(val)}<button type="button" onclick="removeTag(this,'${esc(val)}')" title="Eliminar">×</button>`;
+  wrap.insertBefore(chip, inp);
+}
+function removeTag(btn, val) { btn.parentElement.remove(); }
+function getTags() {
+  return Array.from(document.querySelectorAll('#tag-wrap .tag-chip')).map(c => c.childNodes[0].textContent.trim());
+}
+
+function saveProject(idx) {
+  const projects = loadProjects();
+  const p = {
+    id:        document.getElementById('f-id').value.trim()   || 'proj-' + Date.now(),
+    num:       document.getElementById('f-num').value.trim()  || (projects.length + 1).toString().padStart(2,'0'),
+    year:      document.getElementById('f-year').value.trim() || new Date().getFullYear()+'',
+    name:      document.getElementById('f-name').value.trim(),
+    desc:      document.getElementById('f-desc').value.trim(),
+    role:      document.getElementById('f-role').value.trim(),
+    tags:      getTags(),
+    bg:        document.getElementById('f-bg').value.trim()   || '#111826',
+    ac:        document.getElementById('f-ac').value.trim()   || '#d4ff47',
+    challenge: document.getElementById('f-challenge').value.trim(),
+    solution:  document.getElementById('f-solution').value.trim(),
+  };
+  if (!p.name) { alert('El nombre es obligatorio'); return; }
+  if (idx !== null && idx !== undefined) projects[idx] = p;
+  else projects.push(p);
+  saveProjects(projects);
+  closeModal();
+  renderProjects();
+  toast('Proyecto guardado ✓');
+}
+
+function deleteProject(idx) {
+  if (!confirm('¿Eliminar este proyecto?')) return;
+  const projects = loadProjects();
+  projects.splice(idx, 1);
+  saveProjects(projects);
+  renderProjects();
+  toast('Proyecto eliminado');
+}
+
+/* ══════════════════════════════════════════════════════════
+   BLOG POSTS
+══════════════════════════════════════════════════════════ */
+function renderPosts() {
+  const posts = loadPosts();
+  const main  = document.getElementById('main-content');
+  main.innerHTML = `
+    <div class="main-hdr">
+      <div>
+        <h1 class="main-title">Blog<span>.</span></h1>
+        <p class="main-sub">${posts.length} entrada${posts.length !== 1 ? 's' : ''}</p>
+      </div>
+      <button class="btn-p" onclick="openPostForm()">+ Nueva entrada</button>
+    </div>
+    <div class="card-list" id="posts-list">
+      ${posts.map((p, i) => `
+        <div class="card-item">
+          <div class="card-item-info">
+            <div class="card-item-name">${esc(p.title)}</div>
+            <div class="card-item-meta">${esc(p.tag)} &nbsp;·&nbsp; ${esc(p.date)} &nbsp;·&nbsp; ${esc(p.read)} de lectura</div>
+          </div>
+          <div class="card-item-acts">
+            <button class="btn-g" onclick="openPostForm(${i})">Editar</button>
+            <button class="btn-d" onclick="deletePost(${i})">Eliminar</button>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function openPostForm(idx) {
+  const posts = loadPosts();
+  const p = idx !== undefined ? { ...posts[idx] } : { tag:'', title:'', excerpt:'', date:'', read:'' };
+  const isEdit = idx !== undefined;
+  openModal(`
+    <div class="modal-hdr">
+      <h2 class="modal-title">${isEdit ? 'Editar' : 'Nueva'} entrada</h2>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="form-row">
+      <label class="form-label">Título *</label>
+      <input class="form-input" id="p-title" value="${esc(p.title)}" placeholder="Título del artículo" />
+    </div>
+    <div class="form-grid">
+      <div class="form-row">
+        <label class="form-label">Categoría / Tag</label>
+        <input class="form-input" id="p-tag" value="${esc(p.tag)}" placeholder="Performance, Mobile…" />
+      </div>
+      <div class="form-grid" style="gap:10px">
+        <div class="form-row">
+          <label class="form-label">Fecha</label>
+          <input class="form-input" id="p-date" value="${esc(p.date)}" placeholder="12 Abr 2026" />
+        </div>
+        <div class="form-row">
+          <label class="form-label">Tiempo lectura</label>
+          <input class="form-input" id="p-read" value="${esc(p.read)}" placeholder="5 min" />
+        </div>
+      </div>
+    </div>
+    <div class="form-row">
+      <label class="form-label">Extracto / Resumen *</label>
+      <textarea class="form-input" id="p-excerpt" placeholder="Resumen del artículo para la tarjeta...">${esc(p.excerpt)}</textarea>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px">
+      <button class="btn-g" onclick="closeModal()">Cancelar</button>
+      <button class="btn-p" onclick="savePost(${isEdit ? idx : 'null'})">Guardar entrada</button>
+    </div>
+  `);
+}
+
+function savePost(idx) {
+  const posts = loadPosts();
+  const p = {
+    tag:     document.getElementById('p-tag').value.trim(),
+    title:   document.getElementById('p-title').value.trim(),
+    excerpt: document.getElementById('p-excerpt').value.trim(),
+    date:    document.getElementById('p-date').value.trim(),
+    read:    document.getElementById('p-read').value.trim(),
+  };
+  if (!p.title) { alert('El título es obligatorio'); return; }
+  if (idx !== null && idx !== undefined) posts[idx] = p;
+  else posts.push(p);
+  savePosts(posts);
+  closeModal();
+  renderPosts();
+  toast('Entrada guardada ✓');
+}
+
+function deletePost(idx) {
+  if (!confirm('¿Eliminar esta entrada?')) return;
+  const posts = loadPosts();
+  posts.splice(idx, 1);
+  savePosts(posts);
+  renderPosts();
+  toast('Entrada eliminada');
+}
+
+/* ══════════════════════════════════════════════════════════
+   SETTINGS
+══════════════════════════════════════════════════════════ */
+function renderSettings() {
+  const projects = loadProjects();
+  const posts    = loadPosts();
+  document.getElementById('main-content').innerHTML = `
+    <div class="main-hdr">
+      <div>
+        <h1 class="main-title">Ajustes<span>.</span></h1>
+        <p class="main-sub">Datos y exportación</p>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-n">${projects.length}</div><div class="stat-l">Proyectos</div></div>
+      <div class="stat"><div class="stat-n">${posts.length}</div><div class="stat-l">Entradas blog</div></div>
+      <div class="stat"><div class="stat-n" style="font-size:28px;padding-top:8px">${new Date().getFullYear()}</div><div class="stat-l">Año activo</div></div>
+    </div>
+
+    <div class="section-hdr"><span class="section-title">Exportar datos</span></div>
+    <div class="io-row">
+      <span class="io-label">Descarga un JSON con todos tus proyectos y entradas</span>
+      <button class="btn-p" onclick="exportData()">Exportar JSON</button>
+    </div>
+
+    <hr class="sep">
+
+    <div class="section-hdr"><span class="section-title">Importar datos</span></div>
+    <div class="io-row">
+      <span class="io-label">Carga un JSON exportado previamente para restaurar contenido</span>
+      <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)" />
+      <button class="btn-g" onclick="document.getElementById('import-file').click()">Importar JSON</button>
+    </div>
+
+    <hr class="sep">
+
+    <div class="section-hdr"><span class="section-title">Zona peligrosa</span></div>
+    <div class="io-row">
+      <span class="io-label">Restaurar datos de ejemplo (sobreescribirá tu contenido actual)</span>
+      <button class="btn-d" onclick="resetData()">Restaurar por defecto</button>
+    </div>
+  `;
+}
+
+function exportData() {
+  const data = { projects: loadProjects(), posts: loadPosts(), exported: new Date().toISOString() };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `oskinar-data-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  toast('Datos exportados ✓');
+}
+
+function importData(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if (data.projects) saveProjects(data.projects);
+      if (data.posts)    savePosts(data.posts);
+      renderSettings();
+      toast('Datos importados ✓');
+    } catch { alert('Archivo JSON no válido'); }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+
+function resetData() {
+  if (!confirm('¿Restaurar los datos de ejemplo? Se perderá todo el contenido actual.')) return;
+  saveProjects(JSON.parse(JSON.stringify(DEFAULT_PROJECTS)));
+  savePosts(JSON.parse(JSON.stringify(DEFAULT_POSTS)));
+  renderSettings();
+  toast('Datos restaurados ✓');
+}
+
+/* ── UTILS ───────────────────────────────────────────────── */
+function esc(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ── INIT ────────────────────────────────────────────────── */
+renderProjects();
+</script>
+</body>
+</html>

@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oskinar — Desarrollador de apps y web</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
+  <style>
+    /* ── TOKENS ────────────────────────────────────────── */
+    :root {
+      --bg:        #0a0908;
+      --bg2:       #111009;
+      --fg:        #f0ede6;
+      --muted:     #6a6762;
+      --border:    #252320;
+      --accent:    #d4ff47;
+      --aD:        rgba(212,255,71,.10);
+      --aM:        rgba(212,255,71,.45);
+      --dF:        'Bebas Neue', sans-serif;
+      --bF:        'Space Grotesk', sans-serif;
+      --mF:        'Space Mono', monospace;
+      --nav:       60px;
+      --pad:       clamp(24px,5vw,80px);
+      --r:         3px;
+    }
+    [data-theme="light"] {
+      --bg:     #f5f2eb;
+      --bg2:    #ece9e0;
+      --fg:     #0a0908;
+      --muted:  #7a7570;
+      --border: #ccc8be;
+      --accent: #6b8b00;
+      --aD:     rgba(107,139,0,.10);
+      --aM:     rgba(107,139,0,.72);
+    }
+
+    /* ── RESET ─────────────────────────────────────────── */
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth;font-size:16px}
+    body{
+      background:var(--bg);color:var(--fg);
+      font-family:var(--bF);overflow-x:hidden;
+      cursor:none;transition:background .5s,color .5s;
+      -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+    }
+    a,button{cursor:none}
+    button{background:none;border:none;color:inherit;font:inherit}
+    ::-webkit-scrollbar{width:3px}
+    ::-webkit-scrollbar-track{background:var(--bg)}
+    ::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+    /* ── UTILITIES ─────────────────────────────────────── */
+    .mono{font-family:var(--mF)}
+    .accent{color:var(--accent)}
+    .muted{color:var(--muted)}
+    .df{font-family:var(--dF)}
+
+    /* ── GRAIN ─────────────────────────────────────────── */
+    .grain{
+      position:fixed;inset:0;z-index:9998;pointer-events:none;
+      opacity:.045;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size:200px 200px;
+    }
+
+    /* ── CURSOR ────────────────────────────────────────── */
+    .c-dot{
+      position:fixed;top:-4px;left:-4px;width:8px;height:8px;
+      background:var(--accent);border-radius:50%;
+      pointer-events:none;z-index:10000;will-change:transform;
+    }
+    .c-ring{
+      position:fixed;top:-18px;left:-18px;
+      width:36px;height:36px;
+      border:1.5px solid var(--aM);border-radius:50%;
+      pointer-events:none;z-index:9999;will-change:transform;
+      transition:width .22s,height .22s,border-color .22s;
+    }
+    .c-ring.exp{width:60px;height:60px;top:-30px;left:-30px;border-color:var(--fg)}
+
+    /* ── NAV ───────────────────────────────────────────── */
+    .nav{
+      position:fixed;top:0;left:0;right:0;height:var(--nav);
+      display:flex;align-items:center;justify-content:space-between;
+      padding:0 var(--pad);z-index:200;
+      transition:background .4s,border-color .4s;
+      border-bottom:1px solid transparent;
+    }
+    .nav.sc{background:rgba(10,9,8,.88);border-color:var(--border);backdrop-filter:blur(18px)}
+    [data-theme="light"] .nav.sc{background:rgba(245,242,235,.88)}
+    .nav-logo{font-family:var(--dF);font-size:22px;letter-spacing:.05em;color:var(--fg)}
+    .nav-links{display:flex;gap:28px}
+    .nav-lnk{
+      font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;
+      color:var(--muted);transition:color .2s;position:relative;padding:4px 0;
+    }
+    .nav-lnk::after{content:'';position:absolute;bottom:0;left:0;width:0;height:1px;background:var(--accent);transition:width .3s}
+    .nav-lnk:hover,.nav-lnk.on{color:var(--fg)}
+    .nav-lnk.on::after,.nav-lnk:hover::after{width:100%}
+    .nav-acts{display:flex;gap:12px;align-items:center}
+    .nav-btn{
+      font-size:17px;color:var(--muted);padding:4px 8px;
+      border:1px solid transparent;border-radius:var(--r);
+      transition:color .2s,border-color .2s;
+    }
+    .nav-btn:hover{color:var(--accent);border-color:var(--border)}
+
+    /* ── PAGE ──────────────────────────────────────────── */
+    .page{min-height:100vh;padding-top:var(--nav);animation:pgIn .45s ease}
+    @keyframes pgIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+    /* ── REVEAL ────────────────────────────────────────── */
+    .rv{opacity:0;transform:translateY(28px);transition:opacity .8s cubic-bezier(.22,1,.36,1),transform .8s cubic-bezier(.22,1,.36,1)}
+    .rv.vis{opacity:1;transform:none}
+
+    /* ── HERO ──────────────────────────────────────────── */
+    .hero{
+      min-height:calc(100vh - var(--nav));display:flex;flex-direction:column;
+      justify-content:center;padding:0 var(--pad);position:relative;overflow:hidden;
+    }
+    .hero-eye{
+      font-family:var(--mF);font-size:10px;letter-spacing:.22em;text-transform:uppercase;
+      color:var(--accent);margin-bottom:20px;display:flex;align-items:center;gap:12px;
+    }
+    .hero-eye::before{content:'';display:inline-block;width:28px;height:1px;background:var(--accent)}
+    .hero-name{
+      font-family:var(--dF);
+      font-size:clamp(96px,22vw,320px);
+      line-height:.88;letter-spacing:.015em;color:var(--fg);
+      user-select:none;
+    }
+    .h-l{display:inline-block;animation:lIn .8s cubic-bezier(.22,1,.36,1) both}
+    @keyframes lIn{from{opacity:0;transform:translateY(64px)}to{opacity:1;transform:none}}
+    .hero-sub{
+      margin-top:28px;display:flex;justify-content:space-between;
+      align-items:flex-end;flex-wrap:wrap;gap:24px;
+    }
+    .hero-tag{font-size:clamp(15px,2.2vw,22px);font-weight:300;color:var(--muted);max-width:400px;line-height:1.55}
+    .hero-cta{display:flex;gap:14px;flex-wrap:wrap}
+    .hero-avail{
+      position:absolute;right:var(--pad);top:50%;
+      transform:translateY(-50%) rotate(90deg);
+      font-family:var(--mF);font-size:10px;letter-spacing:.22em;
+      color:var(--muted);text-transform:uppercase;display:flex;
+      align-items:center;gap:8px;white-space:nowrap;
+    }
+    .av-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2.2s infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+
+    /* ── BUTTONS ───────────────────────────────────────── */
+    .btn-p{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:13px 26px;background:var(--accent);color:var(--bg);
+      font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+      border-radius:var(--r);transition:opacity .2s,transform .2s;
+    }
+    .btn-p:hover{opacity:.88;transform:translateY(-2px)}
+    .btn-g{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:13px 26px;border:1px solid var(--border);color:var(--fg);
+      font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+      border-radius:var(--r);transition:border-color .2s,color .2s,transform .2s;
+    }
+    .btn-g:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px)}
+
+    /* ── TICKER ────────────────────────────────────────── */
+    .ticker-w{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:13px 0;margin-top:72px}
+    .ticker-t{display:flex;animation:tick 28s linear infinite;width:max-content}
+    .ticker-i{font-family:var(--mF);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);padding:0 24px;display:flex;align-items:center;gap:24px}
+    .ticker-i::after{content:'·';color:var(--accent)}
+    @keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+    /* ── SECTION ───────────────────────────────────────── */
+    .sec{padding:clamp(72px,11vw,148px) var(--pad)}
+    .sec-lb{
+      font-family:var(--mF);font-size:10px;letter-spacing:.22em;text-transform:uppercase;
+      color:var(--accent);margin-bottom:40px;display:flex;align-items:center;gap:14px;
+    }
+    .sec-lb::after{content:'';flex:1;height:1px;background:var(--border)}
+    .sec-h{font-family:var(--dF);font-size:clamp(48px,8vw,96px);line-height:.9;letter-spacing:.01em}
+
+    /* ── IMG PLACEHOLDER ───────────────────────────────── */
+    .ph{
+      width:100%;height:100%;background:var(--bg2);
+      display:flex;align-items:center;justify-content:center;
+      font-family:var(--mF);font-size:10px;color:var(--border);
+      letter-spacing:.1em;text-transform:uppercase;position:absolute;inset:0;
+    }
+    .ph::before{
+      content:'';position:absolute;inset:0;
+      background:repeating-linear-gradient(45deg,transparent,transparent 20px,rgba(255,255,255,.012) 20px,rgba(255,255,255,.012) 21px);
+    }
+
+    /* ── PORTFOLIO GRID ────────────────────────────────── */
+    .pg{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border)}
+    .pc{position:relative;overflow:hidden;aspect-ratio:4/3;background:var(--bg2)}
+    .pc-bg{position:absolute;inset:0;transition:transform .65s cubic-bezier(.22,1,.36,1)}
+    .pc:hover .pc-bg{transform:scale(1.05)}
+    .pc-in{
+      position:absolute;inset:0;padding:28px;display:flex;flex-direction:column;
+      justify-content:flex-end;
+      background:linear-gradient(to top,rgba(8,7,6,.95) 0%,transparent 65%);
+    }
+    .pc-num{font-family:var(--mF);font-size:10px;color:var(--accent);margin-bottom:6px;letter-spacing:.1em}
+    .pc-name{font-family:var(--dF);font-size:clamp(26px,3.5vw,46px);line-height:1}
+    .pc-desc{font-size:12px;color:var(--muted);margin-top:6px}
+    .tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:12px}
+    .tag{
+      font-family:var(--mF);font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+      padding:3px 9px;border:1px solid var(--border);border-radius:2px;color:var(--muted);
+    }
+    .tag-a{border-color:var(--aM);color:var(--accent)}
+
+    /* ── BLOG ──────────────────────────────────────────── */
+    .blog-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));border:1px solid var(--border)}
+    .bc{padding:36px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);transition:background .3s;position:relative}
+    .bc:hover{background:var(--aD)}
+    .bc-tag{font-family:var(--mF);font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+    .bc-title{font-size:19px;font-weight:600;line-height:1.3;margin-bottom:10px}
+    .bc-ex{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:20px}
+    .bc-meta{font-family:var(--mF);font-size:10px;color:var(--muted);display:flex;gap:14px}
+
+    /* ── ABOUT ─────────────────────────────────────────── */
+    .about-g{display:grid;grid-template-columns:1fr 1.4fr;gap:72px;align-items:start}
+    .big-n{font-family:var(--dF);font-size:clamp(100px,14vw,180px);line-height:1;color:var(--border)}
+    .ab-t{font-size:clamp(15px,1.8vw,19px);line-height:1.75;color:var(--muted)}
+    .ab-t strong{color:var(--fg)}
+    .stack-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:1px;border:1px solid var(--border);margin-top:56px}
+    .si{padding:18px;text-align:center;transition:background .2s,color .2s}
+    .si:hover{background:var(--aD);color:var(--accent)}
+    .si-cat{font-family:var(--mF);font-size:9px;color:var(--muted);margin-bottom:5px;letter-spacing:.1em}
+    .si-nm{font-size:13px;font-weight:500}
+
+    /* ── CONTACT ───────────────────────────────────────── */
+    .cont-g{display:grid;grid-template-columns:1fr 1.5fr;gap:72px;align-items:start}
+    .ci{padding:20px 0;border-bottom:1px solid var(--border)}
+    .ci-lb{font-family:var(--mF);font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+    .ci-val{font-size:15px;font-weight:500}
+    .ff{margin-bottom:22px}
+    .fl{font-family:var(--mF);font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:7px}
+    .fi{
+      width:100%;background:transparent;border:none;border-bottom:1px solid var(--border);
+      color:var(--fg);font-family:var(--bF);font-size:15px;padding:10px 0;
+      outline:none;transition:border-color .3s;
+    }
+    .fi:focus{border-color:var(--accent)}
+    .fi::placeholder{color:var(--border)}
+    textarea.fi{resize:none;height:110px;display:block}
+
+    /* ── TERMINAL ──────────────────────────────────────── */
+    .t-ov{
+      position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:1000;
+      display:flex;align-items:center;justify-content:center;
+      animation:pgIn .18s ease;backdrop-filter:blur(6px);
+    }
+    .t-win{
+      width:min(680px,92vw);background:#0d0c0a;
+      border:1px solid #2a2825;border-radius:8px;overflow:hidden;
+      box-shadow:0 40px 100px rgba(0,0,0,.85);
+    }
+    .t-hdr{
+      background:#1a1917;padding:11px 16px;
+      display:flex;align-items:center;gap:12px;
+      border-bottom:1px solid #2a2825;
+    }
+    .t-ctrls{display:flex;gap:7px}
+    .tc{width:12px;height:12px;border-radius:50%;display:block}
+    .tc.r{background:#ff5f57}.tc.y{background:#ffbd2e}.tc.g{background:#28c840}
+    .t-ttl{font-family:var(--mF);font-size:11px;color:var(--muted);flex:1;text-align:center}
+    .t-body{
+      padding:18px 20px;min-height:340px;max-height:55vh;
+      overflow-y:auto;font-family:var(--mF);font-size:12px;line-height:1.75;
+    }
+    .tl-sys{color:var(--muted);margin-bottom:10px}
+    .tl-in{color:var(--fg)}
+    .tl-out{color:#7acf7a;margin-bottom:10px;white-space:pre}
+    .tl-err{color:#ff6b6b;margin-bottom:10px}
+    .t-inp-r{display:flex;align-items:center;gap:10px;margin-top:6px}
+    .t-inp{flex:1;background:transparent;border:none;outline:none;color:var(--fg);font-family:var(--mF);font-size:12px;caret-color:var(--accent)}
+    .t-inp::placeholder{color:var(--border)}
+
+    /* ── PROJECT DETAIL ────────────────────────────────── */
+    .proj-hero{
+      height:48vh;position:relative;overflow:hidden;
+      border-bottom:1px solid var(--border);display:flex;
+      align-items:flex-end;padding:var(--pad);
+    }
+    .pdg{display:grid;grid-template-columns:1fr 1fr;gap:72px}
+    .pds{padding:36px 0;border-bottom:1px solid var(--border)}
+    .pds-lb{font-family:var(--mF);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+    .img-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border)}
+    .img-cell{height:220px;position:relative;background:var(--bg2)}
+    .img-cell img{width:100%;height:100%;object-fit:cover;display:block}
+    .pc-bg img{width:100%;height:100%;object-fit:cover;display:block;position:absolute;inset:0}
+    .proj-hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.35}
+    .bc-thumb{height:180px;overflow:hidden;margin:-36px -36px 24px;border-bottom:1px solid var(--border)}
+    .bc-thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s cubic-bezier(.22,1,.36,1)}
+    .bc:hover .bc-thumb img{transform:scale(1.04)}
+    .back-b{
+      display:inline-flex;align-items:center;gap:8px;
+      font-family:var(--mF);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+      color:var(--muted);transition:color .2s;padding:var(--pad);padding-bottom:0;
+    }
+    .back-b:hover{color:var(--accent)}
+
+    /* ── FOOTER ────────────────────────────────────────── */
+    .footer{
+      border-top:1px solid var(--border);padding:36px var(--pad);
+      display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;
+      font-family:var(--mF);font-size:10px;color:var(--muted);
+    }
+
+    /* ── TWEAKS ────────────────────────────────────────── */
+    .tw-panel{
+      position:fixed;bottom:24px;right:24px;
+      background:var(--bg);border:1px solid var(--border);border-radius:8px;
+      padding:20px;z-index:5000;min-width:220px;
+      box-shadow:0 20px 60px rgba(0,0,0,.5);
+      font-family:var(--bF);font-size:13px;
+    }
+    .tw-hdr{font-family:var(--mF);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:18px}
+    .tw-row{margin-bottom:14px}
+    .tw-lb{font-size:11px;color:var(--muted);font-family:var(--mF);display:block;margin-bottom:7px}
+    .tw-swatch{width:26px;height:26px;border-radius:50%;border:2px solid transparent;transition:border-color .2s}
+    .tw-swatch.sel{border-color:var(--fg)}
+    .tw-ck-row{display:flex;justify-content:space-between;align-items:center}
+
+    /* ── COOKIE BANNER ─────────────────────────────────── */
+    .cookie-b{
+      position:fixed;bottom:0;left:0;right:0;z-index:6000;
+      background:var(--bg2);border-top:1px solid var(--border);
+      padding:18px var(--pad);display:flex;align-items:center;
+      justify-content:space-between;flex-wrap:wrap;gap:16px;
+      font-family:var(--mF);font-size:11px;color:var(--muted);
+    }
+    .cookie-b p{line-height:1.6;max-width:620px}
+    .cookie-b p a{color:var(--accent);text-decoration:underline}
+    .cookie-acts{display:flex;gap:10px;flex-shrink:0}
+
+    /* ── LEGAL ──────────────────────────────────────────── */
+    .legal-p{max-width:680px;margin:0 auto;padding:clamp(72px,11vw,148px) var(--pad)}
+    .legal-p h1{font-family:var(--dF);font-size:clamp(48px,7vw,80px);line-height:.9;margin-bottom:40px}
+    .legal-p h2{font-family:var(--mF);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin:40px 0 12px}
+    .legal-p p{font-size:14px;line-height:1.8;color:var(--muted);margin-bottom:14px}
+    .legal-p ul{padding-left:20px;color:var(--muted);font-size:14px;line-height:1.8}
+
+    /* ── RESPONSIVE ────────────────────────────────────── */
+    @media(max-width:768px){
+      .nav-links{display:none}
+      .about-g,.cont-g,.pdg{grid-template-columns:1fr;gap:40px}
+      .pg{grid-template-columns:1fr}
+      .blog-g{grid-template-columns:1fr}
+      .hero-avail{display:none}
+      .img-grid{grid-template-columns:1fr}
+    }
+    @media(max-width:480px){
+      .hero-sub{flex-direction:column;align-items:flex-start}
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef, useCallback } = React;
+
+    /* ── SANITY ──────────────────────────────────────────────
+       Rellena projectId con el tuyo de sanity.io/manage
+    ─────────────────────────────────────────────────────────── */
+    const SANITY = {
+      projectId: 'YOUR_PROJECT_ID',
+      dataset:   'production',
+      apiVersion:'2024-01-01',
+    };
+
+    const Q_PROJECTS = encodeURIComponent(
+      `*[_type=="project"]|order(order asc){` +
+      `"id":slug.current,num,year,name,"desc":description,` +
+      `tags,"bg":bgColor,"ac":accentColor,challenge,solution,role,liveUrl,` +
+      `"screenshots":screenshots[0..3].asset->url}`
+    );
+    const Q_POSTS = encodeURIComponent(
+      `*[_type=="post"]|order(publishedAt desc){` +
+      `title,tag,excerpt,"date":publishedAt,"read":readTime,` +
+      `"thumbnail":thumbnail.asset->url}`
+    );
+
+    async function sanityFetch(query) {
+      const url = `https://${SANITY.projectId}.apicdn.sanity.io/v${SANITY.apiVersion}/data/query/${SANITY.dataset}?query=${query}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`Sanity ${res.status}`);
+      return (await res.json()).result;
+    }
+
+    function fmtDate(d) {
+      if (!d) return '';
+      if (!/^\d{4}-\d{2}-\d{2}/.test(d)) return d;
+      const M = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+      const dt = new Date(d + 'T12:00:00');
+      return `${dt.getDate()} ${M[dt.getMonth()]} ${dt.getFullYear()}`;
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       UI COMPONENTS
+    ══════════════════════════════════════════════════════════ */
+
+    function GrainOverlay() {
+      return <div className="grain" aria-hidden="true" />;
+    }
+
+    function CustomCursor() {
+      const dotRef  = useRef(null);
+      const ringRef = useRef(null);
+      const pos     = useRef({ x: -100, y: -100 });
+      const rPos    = useRef({ x: -100, y: -100 });
+      const raf     = useRef(null);
+      const exp     = useRef(false);
+
+      useEffect(() => {
+        const move = (e) => {
+          pos.current = { x: e.clientX, y: e.clientY };
+          if (dotRef.current)
+            dotRef.current.style.transform = `translate(${e.clientX - 4}px,${e.clientY - 4}px)`;
+          const el  = document.elementFromPoint(e.clientX, e.clientY);
+          const hot = !!el?.closest('a,button,[role="button"],input,textarea,[data-hot]');
+          if (hot !== exp.current) {
+            exp.current = hot;
+            ringRef.current?.classList.toggle('exp', hot);
+          }
+        };
+        const loop = () => {
+          rPos.current.x += (pos.current.x - rPos.current.x) * .1;
+          rPos.current.y += (pos.current.y - rPos.current.y) * .1;
+          if (ringRef.current) {
+            const sz  = exp.current ? 60 : 36;
+            const off = sz / 2;
+            ringRef.current.style.transform =
+              `translate(${rPos.current.x - off}px,${rPos.current.y - off}px)`;
+          }
+          raf.current = requestAnimationFrame(loop);
+        };
+        window.addEventListener('mousemove', move);
+        raf.current = requestAnimationFrame(loop);
+        return () => { window.removeEventListener('mousemove', move); cancelAnimationFrame(raf.current); };
+      }, []);
+
+      return (
+        <>
+          <div ref={dotRef}  className="c-dot" />
+          <div ref={ringRef} className="c-ring" />
+        </>
+      );
+    }
+
+    function Nav({ page, nav, onTheme, onTerm }) {
+      const [sc, setSc] = useState(false);
+      useEffect(() => {
+        const fn = () => setSc(window.scrollY > 16);
+        window.addEventListener('scroll', fn, { passive: true });
+        return () => window.removeEventListener('scroll', fn);
+      }, []);
+
+      const links = [
+        { id: 'home',      label: 'Inicio'    },
+        { id: 'about',     label: 'Sobre mí'  },
+        { id: 'portfolio', label: 'Portfolio' },
+        { id: 'blog',      label: 'Blog'      },
+        { id: 'contact',   label: 'Contacto'  },
+      ];
+
+      return (
+        <nav className={`nav${sc ? ' sc' : ''}`}>
+          <button className="nav-logo" onClick={() => nav('home')}>
+            OSK<span className="accent">.</span>
+          </button>
+          <div className="nav-links">
+            {links.map(l => (
+              <button
+                key={l.id}
+                className={`nav-lnk${page === l.id || (page === 'project' && l.id === 'portfolio') ? ' on' : ''}`}
+                onClick={() => nav(l.id)}
+              >
+                {l.label}
+              </button>
+            ))}
+          </div>
+          <div className="nav-acts">
+            <button className="nav-btn mono" onClick={onTerm} title="Terminal (`)">{'>`_`'[0]}_ </button>
+            <button className="nav-btn"      onClick={onTheme} title="Cambiar tema">◐</button>
+          </div>
+        </nav>
+      );
+    }
+
+    const CMDS = {
+      help:     `Comandos disponibles:\n  whoami    — Sobre Oskinar\n  skills    — Stack tecnológico\n  projects  — Proyectos\n  contact   — Contacto\n  clear     — Limpiar terminal\n  exit      — Cerrar terminal`,
+      whoami:   `Oskinar — Desarrollador de apps y web.\nConstruyo experiencias digitales rápidas y elegantes.\nEspecializado en rendimiento y diseño técnico.`,
+      skills:   `Frontend : Astro · React · TypeScript · Next.js\nMobile   : Flutter · Swift UI\nBackend  : Node.js · Deno · PostgreSQL\nDevOps   : Vercel · Cloudflare · Docker`,
+      projects: `→ Arken Dashboard  — Panel SaaS de analíticas\n→ Nómada App       — App multiplataforma de viajes\n→ Espacio Brand    — Web para estudio creativo\n→ Merkado          — E-commerce de alta velocidad`,
+      contact:  `Email    : hola@oskinar.es\nGitHub   : github.com/oskinar\nLinkedIn : linkedin.com/in/oskinar`,
+      exit:     '__EXIT__',
+      clear:    '__CLEAR__',
+    };
+
+    function Terminal({ open, onClose }) {
+      const [hist,   setHist]   = useState([{ k: 'sys', t: 'Bienvenido al terminal de Oskinar v1.0\nEscribe "help" para ver los comandos disponibles.' }]);
+      const [input,  setInput]  = useState('');
+      const [cmdH,   setCmdH]   = useState([]);
+      const [ci,     setCi]     = useState(-1);
+      const inpRef = useRef(null);
+      const endRef = useRef(null);
+
+      useEffect(() => { if (open) setTimeout(() => inpRef.current?.focus(), 60); }, [open]);
+      useEffect(() => { endRef.current?.scrollIntoView(); }, [hist]);
+
+      const run = useCallback((cmd) => {
+        const k = cmd.trim().toLowerCase();
+        const r = CMDS[k];
+        if (r === '__EXIT__')  { setHist(h => [...h, { k:'in', t:`> ${cmd}` }]); setTimeout(onClose, 300); return; }
+        if (r === '__CLEAR__') { setHist([]); return; }
+        setHist(h => [
+          ...h,
+          { k: 'in',  t: `> ${cmd}` },
+          r ? { k: 'out', t: r }
+            : { k: 'err', t: `Comando no reconocido: "${k}". Escribe "help".` },
+        ]);
+        setCmdH(h => [cmd, ...h]);
+        setCi(-1);
+      }, [onClose]);
+
+      const onKey = (e) => {
+        if (e.key === 'Enter' && input.trim()) { run(input); setInput(''); }
+        else if (e.key === 'ArrowUp')   { e.preventDefault(); const n=Math.min(ci+1,cmdH.length-1); setCi(n); setInput(cmdH[n]||''); }
+        else if (e.key === 'ArrowDown') { e.preventDefault(); const n=Math.max(ci-1,-1);            setCi(n); setInput(n===-1?'':cmdH[n]); }
+        else if (e.key === 'Escape') onClose();
+      };
+
+      if (!open) return null;
+      return (
+        <div className="t-ov" onClick={e => e.target === e.currentTarget && onClose()}>
+          <div className="t-win">
+            <div className="t-hdr">
+              <div className="t-ctrls">
+                <span className="tc r" onClick={onClose} />
+                <span className="tc y" />
+                <span className="tc g" />
+              </div>
+              <span className="t-ttl">oskinar — terminal</span>
+            </div>
+            <div className="t-body">
+              {hist.map((ln, i) => (
+                <div key={i} className={`tl-${ln.k}`}>
+                  {ln.t.split('\n').map((l, j) => <div key={j}>{l || '\u00a0'}</div>)}
+                </div>
+              ))}
+              <div className="t-inp-r">
+                <span className="accent mono">→</span>
+                <input
+                  ref={inpRef}
+                  className="t-inp"
+                  value={input}
+                  onChange={e => setInput(e.target.value)}
+                  onKeyDown={onKey}
+                  spellCheck={false}
+                  autoComplete="off"
+                  placeholder="escribe un comando..."
+                />
+              </div>
+              <div ref={endRef} />
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    function Footer({ nav }) {
+      const lnkSt = { color:'var(--muted)', fontFamily:'var(--mF)', fontSize:'10px', letterSpacing:'.08em', transition:'color .2s' };
+      return (
+        <footer className="footer" style={{ flexDirection:'column', gap:'20px' }}>
+          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', width:'100%', flexWrap:'wrap', gap:'12px' }}>
+            <span>© 2026 Oskinar</span>
+            <span className="mono" style={{ letterSpacing: '.08em' }}>Diseñado y construido con cuidado.</span>
+            <button onClick={() => nav('contact')} style={{ color:'var(--accent)', fontFamily:'var(--mF)', fontSize:'10px', letterSpacing:'.1em' }}>
+              hola@oskinar.es
+            </button>
+          </div>
+          <div style={{ display:'flex', gap:'20px', borderTop:'1px solid var(--border)', paddingTop:'16px', width:'100%' }}>
+            {[['privacy','Política de privacidad'],['terms','Aviso legal'],['cookies','Política de cookies']].map(([id,label]) => (
+              <button key={id} style={lnkSt} onClick={() => nav(id)}
+                onMouseEnter={e => e.target.style.color='var(--accent)'}
+                onMouseLeave={e => e.target.style.color='var(--muted)'}
+              >{label}</button>
+            ))}
+          </div>
+        </footer>
+      );
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       DATA
+    ══════════════════════════════════════════════════════════ */
+
+    const SKILLS_T = ['Astro','React','TypeScript','Flutter','Node.js','Deno','PostgreSQL','Supabase','Next.js','Swift UI','Figma','Cloudflare','Docker','Vercel'];
+    const TICKER   = [...SKILLS_T, ...SKILLS_T];
+
+    const DEFAULT_PROJECTS = [
+      {
+        id: 'arken', num: '01', year: '2025',
+        name: 'Arken Dashboard',
+        desc: 'Panel SaaS de analíticas en tiempo real',
+        tags: ['Astro','React','Supabase'],
+        bg: '#111826', ac: '#4a90e2',
+        challenge: 'Construir un dashboard complejo que mantuviera el rendimiento con datos en tiempo real y múltiples usuarios simultáneos.',
+        solution: 'Arquitectura Astro con islas React para los componentes interactivos, WebSockets para datos en vivo y optimización agresiva de renders.',
+        role: 'Full Stack Developer',
+      },
+      {
+        id: 'nomada', num: '02', year: '2025',
+        name: 'Nómada App',
+        desc: 'App de viajes multiplataforma',
+        tags: ['Flutter','Node.js','PostgreSQL'],
+        bg: '#0f1e14', ac: '#4acf72',
+        challenge: 'Una única base de código funcionando perfectamente en iOS y Android, con mapas offline y sincronización de datos.',
+        solution: 'Flutter para el cliente móvil con gestión de estado BLoC, backend Node.js con sincronización offline-first usando SQLite local y replicación.',
+        role: 'Mobile & Backend Developer',
+      },
+      {
+        id: 'espacio', num: '03', year: '2024',
+        name: 'Espacio Brand',
+        desc: 'Identidad digital para estudio creativo',
+        tags: ['Astro','GSAP','Cloudflare'],
+        bg: '#16112a', ac: '#9b59b6',
+        challenge: 'Una presencia web que representara el nivel creativo del estudio sin sacrificar velocidad de carga.',
+        solution: 'Astro con animaciones GSAP optimizadas, imágenes procesadas con Cloudflare Images y puntuación perfecta en Lighthouse.',
+        role: 'Frontend & Creative Dev',
+      },
+      {
+        id: 'merkado', num: '04', year: '2024',
+        name: 'Merkado',
+        desc: 'E-commerce de alta velocidad',
+        tags: ['Next.js','Stripe','Vercel'],
+        bg: '#221212', ac: '#e74c3c',
+        challenge: 'Tienda online que cargara al instante con catálogo de miles de productos y checkout sin fricciones.',
+        solution: 'Next.js con ISR para páginas de producto, búsqueda Algolia, Stripe para pagos y edge runtime en Vercel para latencias mínimas.',
+        role: 'Frontend & E-commerce Dev',
+      },
+    ];
+
+    const DEFAULT_POSTS = [
+      { tag: 'Performance',   title: 'Astro vs Next.js: el futuro del desarrollo web',    excerpt: 'Una comparativa honesta entre los dos frameworks más relevantes de 2025, con benchmarks reales.',               date: '12 Abr 2026', read: '5 min' },
+      { tag: 'Mobile',        title: 'Flutter en producción: lecciones de dos años',       excerpt: 'Todo lo que aprendí llevando una app Flutter de 0 a 100.000 usuarios activos. Lo bueno y lo técnico.',          date: '28 Mar 2026', read: '8 min' },
+      { tag: 'Design & Code', title: 'Cómo alcancé el 100 en Lighthouse',                  excerpt: 'El proceso completo para optimizar una web real hasta conseguir una puntuación perfecta en Core Web Vitals.',   date: '15 Feb 2026', read: '6 min' },
+      { tag: 'TypeScript',    title: 'TypeScript estricto: por qué vale la pena el dolor', excerpt: 'Activar el modo strict puede parecer un obstáculo. Aquí explico por qué cambió mi forma de escribir código.', date: '3 Ene 2026',  read: '4 min' },
+    ];
+
+    function loadStored(key, defaults) {
+      try { const d = JSON.parse(localStorage.getItem(key)); return (Array.isArray(d) && d.length) ? d : defaults; }
+      catch { return defaults; }
+    }
+
+    const STACK = [
+      { name:'Astro',      cat:'Web'     }, { name:'React',      cat:'UI'      }, { name:'TypeScript', cat:'Lang'    },
+      { name:'Next.js',    cat:'Web'     }, { name:'Flutter',    cat:'Mobile'  }, { name:'Swift UI',   cat:'iOS'     },
+      { name:'Node.js',    cat:'Backend' }, { name:'Deno',       cat:'Backend' }, { name:'PostgreSQL', cat:'DB'      },
+      { name:'Supabase',   cat:'BaaS'    }, { name:'Figma',      cat:'Design'  }, { name:'Cloudflare', cat:'Infra'   },
+      { name:'Docker',     cat:'DevOps'  }, { name:'Vercel',     cat:'Deploy'  }, { name:'Git',        cat:'Tools'   },
+    ];
+
+    /* ══════════════════════════════════════════════════════════
+       PAGE COMPONENTS
+    ══════════════════════════════════════════════════════════ */
+
+    function Ph({ label, bg, color }) {
+      return (
+        <div className="ph" style={{ background: bg, color: color || 'var(--border)' }}>
+          <span style={{ position: 'relative', zIndex: 1 }}>{label}</span>
+        </div>
+      );
+    }
+
+    function ProjCard({ proj, nav }) {
+      return (
+        <div className="pc" onClick={() => nav('project', proj)} data-hot style={{ cursor: 'none' }}>
+          <div className="pc-bg" style={{ background: proj.bg }}>
+            {proj.screenshots?.[0]
+              ? <img src={proj.screenshots[0]} alt={proj.name} />
+              : <Ph label={proj.name} bg={proj.bg} color={proj.ac} />
+            }
+          </div>
+          <div className="pc-in">
+            <div className="pc-num">{proj.num} · {proj.year}</div>
+            <div className="pc-name">{proj.name}</div>
+            <div className="pc-desc">{proj.desc}</div>
+            <div className="tags" style={{ marginTop: '10px' }}>
+              {proj.tags.map(t => <span key={t} className="tag">{t}</span>)}
+              <span className="tag tag-a">Ver →</span>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    function HomePage({ nav, showTicker, projects, posts }) {
+      const letters = 'OSKINAR'.split('');
+      return (
+        <div className="page">
+          <section className="hero">
+            <div className="hero-eye"><span>Portfolio 2026</span></div>
+            <h1 className="hero-name" aria-label="Oskinar">
+              {letters.map((l, i) => (
+                <span key={i} className="h-l" style={{ animationDelay: `${i * .07}s` }}>{l}</span>
+              ))}
+            </h1>
+            <div className="hero-sub">
+              <p className="hero-tag">
+                Desarrollador de apps y web. Construyo<br />experiencias digitales rápidas y elegantes.
+              </p>
+              <div className="hero-cta">
+                <button className="btn-p" onClick={() => nav('portfolio')}>Ver proyectos →</button>
+                <button className="btn-g" onClick={() => nav('about')}>Sobre mí</button>
+              </div>
+            </div>
+            <div className="hero-avail">
+              <span className="av-dot" />
+              <span>Disponible para proyectos · 2026</span>
+            </div>
+          </section>
+
+          {showTicker && (
+            <div className="ticker-w">
+              <div className="ticker-t">
+                {TICKER.map((s, i) => <span key={i} className="ticker-i">{s}</span>)}
+              </div>
+            </div>
+          )}
+
+          <section className="sec">
+            <div className="sec-lb rv" style={{ transitionDelay: '0ms' }}>Sobre el trabajo</div>
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'72px', alignItems:'start' }}>
+              <h2 className="sec-h rv" style={{ transitionDelay:'80ms' }}>
+                Código que<br /><span className="accent">funciona.</span>
+              </h2>
+              <div className="rv" style={{ transitionDelay:'160ms' }}>
+                <p style={{ fontSize:'17px', lineHeight:'1.7', color:'var(--muted)', marginTop:'10px' }}>
+                  Especializado en crear productos digitales donde el rendimiento y el diseño no se comprometen. Desde apps móviles hasta webs de alto tráfico.
+                </p>
+                <button onClick={() => nav('about')} style={{ marginTop:'28px', fontFamily:'var(--mF)', fontSize:'11px', letterSpacing:'.15em', textTransform:'uppercase', color:'var(--accent)' }}>
+                  Leer más →
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <section style={{ padding:'0 var(--pad)', paddingBottom:'clamp(72px,11vw,148px)' }}>
+            <div className="sec-lb rv">Proyectos destacados</div>
+            <div className="pg" style={{ marginTop:'0' }}>
+              {projects.slice(0,2).map((p, i) => (
+                <div key={p.id || i} className="rv" style={{ transitionDelay:`${i*120}ms` }}>
+                  <ProjCard proj={p} nav={nav} />
+                </div>
+              ))}
+            </div>
+            <button onClick={() => nav('portfolio')} className="btn-g" style={{ marginTop:'16px' }}>Ver todos los proyectos →</button>
+          </section>
+
+          <section style={{ padding:'0 var(--pad)', paddingBottom:'clamp(72px,11vw,148px)' }}>
+            <div className="sec-lb rv">Últimas entradas</div>
+            <div className="blog-g rv" style={{ transitionDelay:'80ms' }}>
+              {posts.slice(0,2).map((p, i) => (
+                <div key={i} className="bc" data-hot onClick={() => nav('blog')} style={{ cursor:'none' }}>
+                  {p.thumbnail && <div className="bc-thumb"><img src={p.thumbnail} alt={p.title} /></div>}
+                  <div className="bc-tag">{p.tag}</div>
+                  <h3 className="bc-title">{p.title}</h3>
+                  <p className="bc-ex">{p.excerpt}</p>
+                  <div className="bc-meta"><span>{fmtDate(p.date)}</span><span>{p.read} de lectura</span></div>
+                </div>
+              ))}
+            </div>
+            <button onClick={() => nav('blog')} className="btn-g" style={{ marginTop:'16px' }}>Ver todas las entradas →</button>
+          </section>
+
+          <Footer nav={nav} />
+        </div>
+      );
+    }
+
+    function AboutPage({ nav }) {
+      return (
+        <div className="page">
+          <section className="sec">
+            <div className="sec-lb rv">Sobre mí</div>
+            <div className="about-g">
+              <div className="rv" style={{ transitionDelay:'80ms' }}>
+                <div className="big-n">05<span className="accent">+</span></div>
+                <p className="mono muted" style={{ fontSize:'10px', letterSpacing:'.15em', textTransform:'uppercase', marginTop:'8px' }}>
+                  Años de experiencia
+                </p>
+              </div>
+              <div className="rv" style={{ transitionDelay:'160ms' }}>
+                <p className="ab-t">Soy <strong>Oskinar</strong>, desarrollador de apps y web con más de 5 años construyendo productos digitales que priorizan el rendimiento y la experiencia de usuario.</p>
+                <p className="ab-t" style={{ marginTop:'20px' }}>Me especializo en el stack web moderno —especialmente <strong>Astro</strong> para proyectos donde la velocidad de carga es crítica— y en desarrollo móvil multiplataforma con <strong>Flutter</strong>.</p>
+                <p className="ab-t" style={{ marginTop:'20px' }}>Creo que el buen código y el buen diseño no son opuestos. La mejor interfaz es la que no se nota.</p>
+                <button className="btn-p" style={{ marginTop:'36px' }} onClick={() => nav('contact')}>Trabajemos juntos →</button>
+              </div>
+            </div>
+          </section>
+          <section style={{ padding:'0 var(--pad)', paddingBottom:'clamp(72px,11vw,148px)' }}>
+            <div className="sec-lb rv">Stack tecnológico</div>
+            <div className="stack-g rv" style={{ transitionDelay:'80ms' }}>
+              {STACK.map(s => (
+                <div key={s.name} className="si" data-hot>
+                  <div className="si-cat">{s.cat}</div>
+                  <div className="si-nm">{s.name}</div>
+                </div>
+              ))}
+            </div>
+          </section>
+          <Footer nav={nav} />
+        </div>
+      );
+    }
+
+    function BlogPage({ nav, posts }) {
+      return (
+        <div className="page">
+          <section className="sec">
+            <div className="sec-lb rv">Blog</div>
+            <h1 className="sec-h rv" style={{ transitionDelay:'60ms', marginBottom:'52px' }}>
+              Ideas y<br /><span className="accent">técnica.</span>
+            </h1>
+            <div className="blog-g rv" style={{ transitionDelay:'140ms' }}>
+              {posts.map((p, i) => (
+                <div key={i} className="bc" data-hot>
+                  {p.thumbnail && <div className="bc-thumb"><img src={p.thumbnail} alt={p.title} /></div>}
+                  <div className="bc-tag">{p.tag}</div>
+                  <h3 className="bc-title">{p.title}</h3>
+                  <p className="bc-ex">{p.excerpt}</p>
+                  <div className="bc-meta"><span>{fmtDate(p.date)}</span><span>{p.read} de lectura</span></div>
+                </div>
+              ))}
+            </div>
+          </section>
+          <Footer nav={nav} />
+        </div>
+      );
+    }
+
+    function PortfolioPage({ nav, projects }) {
+      return (
+        <div className="page">
+          <section className="sec">
+            <div className="sec-lb rv">Portfolio</div>
+            <h1 className="sec-h rv" style={{ transitionDelay:'60ms', marginBottom:'52px' }}>
+              Proyectos<br /><span className="accent">seleccionados.</span>
+            </h1>
+            <div className="pg rv" style={{ transitionDelay:'140ms' }}>
+              {projects.map((p, i) => <ProjCard key={p.id || i} proj={p} nav={nav} />)}
+            </div>
+          </section>
+          <Footer nav={nav} />
+        </div>
+      );
+    }
+
+    function ProjectPage({ proj, nav, projects }) {
+      const p = proj || projects[0];
+      return (
+        <div className="page">
+          <button className="back-b" onClick={() => nav('portfolio')}>← Volver al portfolio</button>
+          <div className="proj-hero" style={{ background: p.bg }}>
+            {p.screenshots?.[0]
+              ? <img className="proj-hero-img" src={p.screenshots[0]} alt={p.name} />
+              : <Ph label={`${p.name} — imagen principal`} bg={p.bg} color={p.ac} />
+            }
+            <div style={{ position:'relative', zIndex:2 }}>
+              <div className="pc-num" style={{ color: p.ac, marginBottom:'8px' }}>{p.num} · {p.year}</div>
+              <h1 style={{ fontFamily:'var(--dF)', fontSize:'clamp(48px,8vw,88px)', lineHeight:'.95' }}>{p.name}</h1>
+              <p className="muted" style={{ marginTop:'8px', fontSize:'15px' }}>{p.desc}</p>
+            </div>
+          </div>
+          <section className="sec">
+            <div className="pdg">
+              <div className="rv pds" style={{ transitionDelay:'0ms' }}>
+                <div className="pds-lb">El reto</div>
+                <p style={{ fontSize:'15px', lineHeight:'1.75', color:'var(--muted)' }}>{p.challenge}</p>
+              </div>
+              <div className="rv pds" style={{ transitionDelay:'120ms' }}>
+                <div className="pds-lb">La solución</div>
+                <p style={{ fontSize:'15px', lineHeight:'1.75', color:'var(--muted)' }}>{p.solution}</p>
+              </div>
+            </div>
+            <div className="rv pds" style={{ transitionDelay:'200ms', borderBottom:'none' }}>
+              <div className="pds-lb">Stack utilizado</div>
+              <div className="tags" style={{ marginTop:'10px' }}>
+                {p.tags.map(t => <span key={t} className="tag tag-a">{t}</span>)}
+              </div>
+            </div>
+            <div className="rv" style={{ transitionDelay:'260ms', marginTop:'48px' }}>
+              <div className="pds-lb">Galería</div>
+              <div className="img-grid" style={{ marginTop:'12px' }}>
+                {[0,1,2,3].map(n => (
+                  <div key={n} className="img-cell">
+                    {p.screenshots?.[n]
+                      ? <img src={p.screenshots[n]} alt={`${p.name} captura ${n+1}`} />
+                      : <Ph label={`Captura ${n+1} — ${p.name}`} bg={p.bg} color={p.ac} />
+                    }
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="rv" style={{ transitionDelay:'100ms', marginTop:'56px', display:'flex', gap:'14px', flexWrap:'wrap' }}>
+              {p.liveUrl
+                ? <a href={p.liveUrl} target="_blank" rel="noopener" className="btn-p">Ver proyecto en vivo →</a>
+                : <button className="btn-p" style={{ opacity:.4, pointerEvents:'none' }}>Ver proyecto en vivo →</button>
+              }
+              <button className="btn-g" onClick={() => nav('portfolio')}>Volver al portfolio</button>
+            </div>
+          </section>
+          <Footer nav={nav} />
+        </div>
+      );
+    }
+
+    function ContactPage({ nav }) {
+      const [sent, setSent] = useState(false);
+      const [f, setF] = useState({ name:'', email:'', project:'', message:'' });
+      const upd = (k, v) => setF(x => ({ ...x, [k]: v }));
+
+      return (
+        <div className="page">
+          <section className="sec">
+            <div className="sec-lb rv">Contacto</div>
+            <h1 className="sec-h rv" style={{ transitionDelay:'60ms', marginBottom:'52px' }}>
+              ¿Hablamos<span className="accent">?</span>
+            </h1>
+            <div className="cont-g">
+              <div className="rv" style={{ transitionDelay:'80ms' }}>
+                {[
+                  { lb:'Email',          val:'hola@oskinar.es'          },
+                  { lb:'LinkedIn',       val:'linkedin.com/in/oskinar'  },
+                  { lb:'GitHub',         val:'github.com/oskinar'       },
+                  { lb:'Disponibilidad', val:'Disponible · Q2 2026'     },
+                  { lb:'Respuesta',      val:'< 24 horas'               },
+                ].map(c => (
+                  <div key={c.lb} className="ci">
+                    <div className="ci-lb">{c.lb}</div>
+                    <div className="ci-val">{c.val}</div>
+                  </div>
+                ))}
+              </div>
+              <div className="rv" style={{ transitionDelay:'180ms' }}>
+                {sent ? (
+                  <div style={{ padding:'52px', textAlign:'center', border:'1px solid var(--border)', borderRadius:'var(--r)' }}>
+                    <div style={{ fontFamily:'var(--dF)', fontSize:'80px', color:'var(--accent)', lineHeight:'1' }}>OK</div>
+                    <p className="muted" style={{ marginTop:'16px', fontSize:'14px', lineHeight:'1.6' }}>
+                      Mensaje recibido.<br />Te respondo en menos de 24 horas.
+                    </p>
+                  </div>
+                ) : (
+                  <form onSubmit={e => { e.preventDefault(); if(f.name && f.email && f.message) setSent(true); }}>
+                    {[
+                      { k:'name',    lb:'Nombre',   type:'text',  ph:'Tu nombre'           },
+                      { k:'email',   lb:'Email',    type:'email', ph:'tu@email.com'         },
+                      { k:'project', lb:'Proyecto', type:'text',  ph:'¿En qué trabajamos?' },
+                    ].map(fd => (
+                      <div key={fd.k} className="ff">
+                        <label className="fl">{fd.lb}</label>
+                        <input className="fi" type={fd.type} placeholder={fd.ph}
+                          value={f[fd.k]} onChange={e => upd(fd.k, e.target.value)}
+                          required={fd.k !== 'project'} />
+                      </div>
+                    ))}
+                    <div className="ff">
+                      <label className="fl">Mensaje</label>
+                      <textarea className="fi" placeholder="Cuéntame sobre tu proyecto..."
+                        value={f.message} onChange={e => upd('message', e.target.value)} required />
+                    </div>
+                    <button type="submit" className="btn-p" style={{ width:'100%', justifyContent:'center' }}>
+                      Enviar mensaje →
+                    </button>
+                  </form>
+                )}
+              </div>
+            </div>
+          </section>
+          <Footer nav={nav} />
+        </div>
+      );
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       LEGAL PAGES
+    ══════════════════════════════════════════════════════════ */
+
+    function PrivacyPage({ nav }) {
+      return (
+        <div className="page">
+          <div className="legal-p">
+            <button className="back-b" style={{ padding:'0 0 32px' }} onClick={() => nav('home')}>← Volver al inicio</button>
+            <h1>Política de<br /><span className="accent">Privacidad</span></h1>
+            <h2>Responsable del tratamiento</h2>
+            <p>Oskinar — hola@oskinar.es. Este sitio web se utiliza exclusivamente como portfolio profesional y no recoge datos personales de forma automatizada salvo los indicados a continuación.</p>
+            <h2>Datos que se recogen</h2>
+            <p>El formulario de contacto recoge nombre, dirección de correo electrónico y el mensaje introducido. Estos datos se usan únicamente para responder a tu consulta y no se ceden a terceros.</p>
+            <h2>Cookies y almacenamiento local</h2>
+            <p>Este sitio utiliza <strong>localStorage</strong> del navegador para guardar tus preferencias de tema y la aceptación del banner de cookies. No se utilizan cookies de rastreo ni publicidad.</p>
+            <h2>Tus derechos</h2>
+            <p>Puedes ejercer tus derechos de acceso, rectificación, supresión y portabilidad escribiendo a hola@oskinar.es. También puedes borrar tus datos en cualquier momento vaciando el almacenamiento local del navegador.</p>
+            <h2>Cambios en esta política</h2>
+            <p>Cualquier modificación relevante se comunicará actualizando la fecha en esta página. Última actualización: abril 2026.</p>
+          </div>
+          <Footer nav={nav} />
+        </div>
+      );
+    }
+
+    function TermsPage({ nav }) {
+      return (
+        <div className="page">
+          <div className="legal-p">
+            <button className="back-b" style={{ padding:'0 0 32px' }} onClick={() => nav('home')}>← Volver al inicio</button>
+            <h1>Aviso<br /><span className="accent">Legal</span></h1>
+            <h2>Titularidad</h2>
+            <p>Este sitio web es propiedad de Oskinar (en adelante, "el titular"). El acceso y uso de este sitio implica la aceptación de las presentes condiciones.</p>
+            <h2>Objeto</h2>
+            <p>El sitio tiene carácter informativo y de portfolio profesional. El titular se reserva el derecho a modificar, suspender o eliminar cualquier contenido sin previo aviso.</p>
+            <h2>Propiedad intelectual</h2>
+            <p>Todos los textos, diseños, logotipos y código fuente publicados en este sitio son propiedad del titular o se usan con la debida autorización. Queda prohibida su reproducción total o parcial sin consentimiento expreso.</p>
+            <h2>Limitación de responsabilidad</h2>
+            <p>El titular no se hace responsable de los daños derivados del uso del sitio, de posibles interrupciones del servicio ni del contenido de sitios externos enlazados.</p>
+            <h2>Legislación aplicable</h2>
+            <p>Las presentes condiciones se rigen por la legislación española. Para cualquier controversia, las partes se someten a los juzgados y tribunales del domicilio del titular.</p>
+          </div>
+          <Footer nav={nav} />
+        </div>
+      );
+    }
+
+    function CookiesPage({ nav }) {
+      return (
+        <div className="page">
+          <div className="legal-p">
+            <button className="back-b" style={{ padding:'0 0 32px' }} onClick={() => nav('home')}>← Volver al inicio</button>
+            <h1>Política de<br /><span className="accent">Cookies</span></h1>
+            <h2>¿Qué son las cookies?</h2>
+            <p>Las cookies son pequeños archivos de texto que los sitios web almacenan en tu dispositivo para recordar preferencias o recopilar información de uso.</p>
+            <h2>Cookies que usamos</h2>
+            <p>Este sitio <strong>no utiliza cookies</strong> de rastreo, análisis ni publicidad. Únicamente se usa el <strong>localStorage</strong> del navegador para:</p>
+            <ul>
+              <li>Recordar tu preferencia de tema (oscuro/claro)</li>
+              <li>Guardar el color de acento seleccionado</li>
+              <li>Registrar que has aceptado este aviso</li>
+            </ul>
+            <h2>Cómo gestionar o eliminar</h2>
+            <p>Puedes eliminar estos datos en cualquier momento desde las herramientas de desarrollo de tu navegador (Application → Local Storage) o borrando los datos de navegación del sitio.</p>
+            <h2>Consentimiento</h2>
+            <p>Al hacer clic en "Aceptar" en el banner de cookies o continuar navegando, consientes el uso descrito anteriormente. Última actualización: abril 2026.</p>
+          </div>
+          <Footer nav={nav} />
+        </div>
+      );
+    }
+
+    function CookieBanner({ onAccept, nav }) {
+      const [visible, setVisible] = useState(() => !localStorage.getItem('osk_cookies'));
+      if (!visible) return null;
+      const accept = () => { localStorage.setItem('osk_cookies', '1'); setVisible(false); };
+      return (
+        <div className="cookie-b">
+          <p>
+            Usamos <strong>localStorage</strong> para guardar tus preferencias de tema y acento. Sin cookies de rastreo.{' '}
+            <button onClick={() => nav('cookies')} style={{ color:'var(--accent)', fontFamily:'var(--mF)', fontSize:'11px', textDecoration:'underline' }}>
+              Más información
+            </button>
+          </p>
+          <div className="cookie-acts">
+            <button className="btn-g" style={{ padding:'8px 18px', fontSize:'10px' }} onClick={() => setVisible(false)}>Rechazar</button>
+            <button className="btn-p" style={{ padding:'8px 18px', fontSize:'10px' }} onClick={accept}>Aceptar</button>
+          </div>
+        </div>
+      );
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       APP
+    ══════════════════════════════════════════════════════════ */
+
+    const TWEAK_DEFAULTS = { accent: '#d4ff47', grain: true, ticker: true };
+
+    function App() {
+      const [page,     setPage]     = useState(() => { const p = localStorage.getItem('osk_page'); return ['home','about','portfolio','blog','contact','project'].includes(p) ? p : 'home'; });
+      const [proj,     setProj]     = useState(null);
+      const [termOpen, setTermOpen] = useState(false);
+      const [tweaks,   setTweaks]   = useState(() => {
+        try { return JSON.parse(localStorage.getItem('osk_tweaks')) || TWEAK_DEFAULTS; }
+        catch { return TWEAK_DEFAULTS; }
+      });
+      const [projects, setProjects] = useState(DEFAULT_PROJECTS);
+      const [posts,    setPosts]    = useState(DEFAULT_POSTS);
+
+      const nav = (target, data = null) => {
+        document.documentElement.scrollTop = 0;
+        setProj(data);
+        setPage(target);
+        localStorage.setItem('osk_page', target);
+      };
+
+      const toggleTheme = () => {
+        const html = document.documentElement;
+        html.dataset.theme = html.dataset.theme === 'dark' ? 'light' : 'dark';
+      };
+
+      useEffect(() => {
+        const fn = (e) => {
+          if (e.key === '`' && !e.ctrlKey && !e.metaKey) {
+            e.preventDefault();
+            setTermOpen(t => !t);
+          }
+        };
+        window.addEventListener('keydown', fn);
+        return () => window.removeEventListener('keydown', fn);
+      }, []);
+
+      useEffect(() => {
+        const hex = tweaks.accent;
+        const r = parseInt(hex.slice(1,3),16);
+        const g = parseInt(hex.slice(3,5),16);
+        const b = parseInt(hex.slice(5,7),16);
+        document.documentElement.style.setProperty('--accent', hex);
+        document.documentElement.style.setProperty('--aD', `rgba(${r},${g},${b},.10)`);
+        document.documentElement.style.setProperty('--aM', `rgba(${r},${g},${b},.45)`);
+        localStorage.setItem('osk_tweaks', JSON.stringify(tweaks));
+      }, [tweaks]);
+
+      useEffect(() => {
+        const obs = new IntersectionObserver((entries) => {
+          entries.forEach(e => {
+            if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+          });
+        }, { threshold: 0.1 });
+        const sweep = () => document.querySelectorAll('.rv:not(.vis)').forEach(el => obs.observe(el));
+        sweep();
+        const mo = new MutationObserver(() => setTimeout(sweep, 60));
+        const root = document.getElementById('root');
+        if (root) mo.observe(root, { childList: true, subtree: true });
+        return () => { obs.disconnect(); mo.disconnect(); };
+      }, []);
+
+      useEffect(() => {
+        if (!SANITY.projectId || SANITY.projectId === 'YOUR_PROJECT_ID') return;
+        Promise.all([sanityFetch(Q_PROJECTS), sanityFetch(Q_POSTS)])
+          .then(([projs, postsData]) => {
+            if (projs?.length)     setProjects(projs);
+            if (postsData?.length) setPosts(postsData);
+          })
+          .catch(err => console.warn('Sanity fetch error:', err));
+      }, []);
+
+      const setTweak = (key, val) => setTweaks(t => ({ ...t, [key]: val }));
+      const ACCENTS = ['#d4ff47','#ff6b35','#00d4ff','#e040fb','#ff3d6b','#ffca28'];
+
+      const renderPage = () => {
+        switch (page) {
+          case 'home':      return <HomePage      nav={nav} showTicker={tweaks.ticker} projects={projects} posts={posts} />;
+          case 'about':     return <AboutPage     nav={nav} />;
+          case 'portfolio': return <PortfolioPage nav={nav} projects={projects} />;
+          case 'blog':      return <BlogPage      nav={nav} posts={posts} />;
+          case 'project':   return <ProjectPage   nav={nav} proj={proj} projects={projects} />;
+          case 'contact':   return <ContactPage   nav={nav} />;
+          case 'privacy':   return <PrivacyPage   nav={nav} />;
+          case 'terms':     return <TermsPage     nav={nav} />;
+          case 'cookies':   return <CookiesPage   nav={nav} />;
+          default:          return <HomePage      nav={nav} showTicker={tweaks.ticker} projects={projects} posts={posts} />;
+        }
+      };
+
+      return (
+        <>
+          {tweaks.grain && <GrainOverlay />}
+          <CustomCursor />
+          <Nav page={page} nav={nav} onTheme={toggleTheme} onTerm={() => setTermOpen(t => !t)} />
+          <Terminal open={termOpen} onClose={() => setTermOpen(false)} />
+          {renderPage()}
+          <CookieBanner nav={nav} />
+        </>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
